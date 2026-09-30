@@ -1,112 +1,133 @@
-name: Nebula
+name: nagorik
 
 services:
-  server:
-    depends_on:
-      - "redis"
-      - "redis_insight"
-      - "postgres"
-      - "grafana_loki"
-    build:
-      context: .
-      dockerfile: ./apps/server/Dockerfile
-    container_name: nebula-server
-    env_file:
-      - ./apps/server/.env.production.local
-    ports:
-      - 3000:3000
-    networks:
-      - nebula
-    develop:
-      watch:
-        - action: sync
-          path: ./apps/server/src
-          target: /app/src
-          ignore:
-            - ./apps/server/node_modules/
-            - node_modules/
+  # server:
+  #   depends_on:
+  #     - "redis"
+  #     - "redis_insight"
+  #     - "postgres"
+  #     - "grafana_loki"
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/server/Dockerfile
+  #   container_name: nagorik-server
+  #   env_file:
+  #     - ./apps/server/.env.production.local
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - nagorik
+  #   develop:
+  #     watch:
+  #       - action: sync
+  #         path: ./apps/server/src
+  #         target: /app/src
+  #         ignore:
+  #           - ./apps/server/node_modules/
+  #           - node_modules/
 
-        - action: rebuild
-          path: ./apps/server/package.json
-        - action: rebuild
-          path: package.json
+  #       - action: rebuild
+  #         path: ./apps/server/package.json
+  #       - action: rebuild
+  #         path: package.json
 
-        - action: restart
-          path: ./apps/server/.env
+  #       - action: restart
+  #         path: ./apps/server/.env
 
   postgres:
     image: postgres:latest
-    container_name: nebula-postgres
+    container_name: nagorik-postgres
     ports:
       - 5432:5432
     networks:
-      - nebula
+      - nagorik
     volumes:
-      - nebula_pgData:/var/lib/postgresql/MAJOR/docker
+      - nagorik_pgData:/var/lib/postgresql/MAJOR/docker
     environment:
       - POSTGRES_PASSWORD=postgres
+
+  mongodb:
+    image: mongodb/mongodb-atlas-local:preview
+    hostname: mongodb
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=admin
+      - MONGODB_INITDB_ROOT_PASSWORD=admin
+      - VOYAGE_API_KEY=${VOYAGE_AI_API_KEY}
+    ports:
+      - 27017:27017
+    networks:
+      - nagorik
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - mongoDb:/data/db
+      - configMongoDb:/data/configdb
+      - mongot:/data/mongot
+
   redis:
     image: redis:latest
-    container_name: nebula-redis-server
+    container_name: nagorik-redis-server
     ports:
       - 6379:6379
     networks:
-      - nebula
+      - nagorik
     volumes:
-      - nebula_redis:/data
+      - nagorik_redis:/data
   redis_insight:
     depends_on:
       - "redis"
     image: redis/redisinsight:latest
-    container_name: nebula-redisinsight
+    container_name: nagorik-redisinsight
     volumes:
-      - nebula_redisinsight:/data
+      - nagorik_redisinsight:/data
     ports:
       - 5540:5540
     networks:
-      - nebula
+      - nagorik
     environment:
-      - RI_REDIS_HOST_0=nebula-redis-server
+      - RI_REDIS_HOST_0=nagorik-redis-server
       - RI_REDIS_PORT_0=6379
       - RI_REDIS_USERNAME_0=default
       - RI_REDIS_PASSWORD_0=default
-  prometheus:
-    depends_on:
-      - "server"
-    image: prom/prometheus
-    container_name: prometheus-server
-    networks:
-      - nebula
-    volumes:
-      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
-    ports:
-      - 9090:9090
-  grafana:
-    depends_on:
-      - "prometheus"
-    image: grafana/grafana-oss
-    container_name: grafana
-    networks:
-      - nebula
-    ports:
-      - 3005:3000
-    volumes:
-      - grafana-oss-storage:/var/lib/grafana
-  grafana_loki:
-    image: grafana/loki
-    container_name: nebula-loki
-    networks:
-      - nebula
-    ports:
-      - 3100:3100
+  # prometheus:
+  #   depends_on:
+  #     - "server"
+  #   image: prom/prometheus
+  #   container_name: prometheus-server
+  #   networks:
+  #     - nagorik
+  #   volumes:
+  #     - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - 9090:9090
+  # grafana:
+  #   depends_on:
+  #     - "prometheus"
+  #   image: grafana/grafana-oss
+  #   container_name: grafana
+  #   networks:
+  #     - nagorik
+  #   ports:
+  #     - 3005:3000
+  #   volumes:
+  #     - grafana-oss-storage:/var/lib/grafana
+  # grafana_loki:
+  #   image: grafana/loki
+  #   container_name: nagorik-loki
+  #   networks:
+  #     - nagorik
+  #   ports:
+  #     - 3100:3100
 
 networks:
-  nebula:
+  nagorik:
     driver: bridge
-    name: nebula
+    name: nagorik
 
 volumes:
-  nebula_pgData:
-  nebula_redis:
-  nebula_redisinsight:
+  nagorik_pgData:
+  nagorik_redis:
+  nagorik_redisinsight:
   grafana-oss-storage:
+  mongoDb:
+  configMongoDb:
+  mongot:

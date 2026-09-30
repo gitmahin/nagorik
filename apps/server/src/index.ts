@@ -6,6 +6,7 @@ import { errorHandlerMiddleware, requestLogger } from "./middlewares";
 import { baseConfig } from "./config";
 import { ExpressServer } from "./server";
 import promClient from "@prometheus-io/client";
+import { StartWhatsAppClient } from "./wweb";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Metrics                                    */
@@ -41,12 +42,21 @@ app.use(requestLogger());
 // app.use(limiter);
 
 /* -------------------------------------------------------------------------- */
+/*                             Whatsapp client                                */
+/* -------------------------------------------------------------------------- */
+const wwebClient = StartWhatsAppClient()
+
+/* -------------------------------------------------------------------------- */
 /*                                   Routes                                   */
 /* -------------------------------------------------------------------------- */
 
 app.get("/health", async (_, res) => {
   return res.status(200).json(new ApiResponse(200, "OK"));
 });
+
+app.get("/connect-whatsapp", (req, res) => {
+  
+})
 
 // app.get("/metrics", async (_req, res) => {
 //   try {
