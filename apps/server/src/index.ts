@@ -6,7 +6,10 @@ import { errorHandlerMiddleware, requestLogger } from "./middlewares";
 import { baseConfig } from "./config";
 import { ExpressServer } from "./server";
 import promClient from "@prometheus-io/client";
-import { StartWhatsAppClient } from "./wweb";
+import { wwebClient } from "./libs";
+import { container } from "./container";
+import { ApiRouter } from "./routes";
+import { mongoConnect } from "./libs/mongo.connect";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Metrics                                    */
@@ -22,6 +25,7 @@ collectDefaultMetrics({ register });
 const server = new ExpressServer();
 const app = server.GetApp();
 app.use(requestLogger());
+await mongoConnect();
 
 /* -------------------------------------------------------------------------- */
 /*                                 Rate Limiter                               */
@@ -44,19 +48,54 @@ app.use(requestLogger());
 /* -------------------------------------------------------------------------- */
 /*                             Whatsapp client                                */
 /* -------------------------------------------------------------------------- */
-const wwebClient = StartWhatsAppClient()
+
+wwebClient.on("code", (code) => {
+  console.log(`🔢 Your WhatsApp Pairing Code is: ${code}`);
+});
+
+// 3. ONLY TRIGGER IF AUTHENTICATION IS REQUIRED
+wwebClient.on("qr", async () => {
+  console.log("No existing session found in database. Requesting pairing code...");
+  try {
+    // Manually request the code only when the login screen is active
+    const code = await wwebClient.requestPairingCode("8801950787553");
+    console.log(`🔢 Requested Pairing Code: ${code}`);
+  } catch (err) {
+    console.error("Failed to request pairing code:", err);
+  }
+});
+
+wwebClient.on("ready", () => {
+  console.log("✅ Client is successfully connected and ready!");
+});
+
+wwebClient.on("remote_session_saved", () => {
+  console.log("💾 SUCCESS: Session has been successfully backed up to MongoDB!");
+  console.log("👉 It is now 100% safe to restart your server.");
+});
+
+wwebClient.on("auth_failure", (msg) => {
+  console.error("❌ Authentication failure:", msg);
+});
+
+wwebClient 
+  .initialize()
+  .catch((err) => console.error("initialize failed:", err));
+
+process.on("unhandledRejection", (err) => console.error("unhandled:", err));
+process.on("uncaughtException", (err) => console.error("uncaught:", err));
 
 /* -------------------------------------------------------------------------- */
 /*                                   Routes                                   */
 /* -------------------------------------------------------------------------- */
-
+const apiRouter = container.get(ApiRouter);
+apiRouter.createRouters();
+app.use("/api", apiRouter.getRouters());
 app.get("/health", async (_, res) => {
   return res.status(200).json(new ApiResponse(200, "OK"));
 });
 
-app.get("/connect-whatsapp", (req, res) => {
-  
-})
+app.get("/connect-whatsapp", (req, res) => {});
 
 // app.get("/metrics", async (_req, res) => {
 //   try {
