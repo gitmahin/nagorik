@@ -1,0 +1,680 @@
+{
+  "tables": [
+    {
+      "id": "5Gcvvl4bce9-GhIxCXhEE",
+      "name": "blood_requests",
+      "x": 396,
+      "y": 0,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": "WhwjC7Sk8qVAV2iE1Tr4V",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "XLidWTNIWS7-f6_KOGMej",
+          "name": "blood_group",
+          "type": "BLOOD_GROUP",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": ""
+        },
+        {
+          "id": "kjtOUlnd98J9VZpnTqVSm",
+          "name": "patient_age",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "qI_p-xasa0R16kiAiSPR4",
+          "name": "number_of_bags",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "wGOnqcya6yQFdt670TIs8",
+          "name": "date_time",
+          "type": "TIMESTAMP",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "Hi30veWDbHgWb6XRgROR4",
+          "name": "hospital_name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "LU0RYTbatY5MeMSiwdy_D",
+          "name": "location",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "cPELT41WaUiaEONfRGbsX",
+          "name": "contact_phone",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "4LZrNXULGju4owZ0cpnY8",
+          "name": "contact_person_name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "1b3LGrGJtEO800aMB5oVl",
+          "name": "contact_person_relation",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "PRv5e7CQ4h71br9hO9Rka",
+          "name": "reason_for_blood_request",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "N_fj-8x46F-glu2ez4zOq",
+          "name": "notify_donors",
+          "type": "BOOLEAN",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false,
+      "width": 366
+    },
+    {
+      "id": "yS7T9fBum0G9RA8JeQIEs",
+      "name": "donors",
+      "x": 409,
+      "y": 561,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": "9FAGXlXNTbisH4U-QIeZf",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "OjMirtZqylv_IRATVisCz",
+          "name": "name",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "9xBYaN6jVM1cLjBxGMmQd",
+          "name": "location",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "OfyPGIDLb_o1xlcGzy9OG",
+          "name": "phone",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "Fwif1B4zOan0fPTetQXuE",
+          "name": "email",
+          "type": "VARCHAR",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": 255
+        },
+        {
+          "id": "C_4r4A_dspZUivuXIQW9H",
+          "name": "blood_group",
+          "type": "BLOOD_GROUP",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "89TWZQTaUbvqRue_lRjd8",
+          "name": "active_status",
+          "type": "DONOR_AVAILABILITY",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": ""
+        },
+        {
+          "id": "Sh4RF2R5JwoBhPNq_2usJ",
+          "name": "donation_count",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false,
+      "width": 340
+    },
+    {
+      "id": "CmRQokGIhXoW20Yi5mLj3",
+      "name": "donor_matches",
+      "x": 872,
+      "y": 643.5,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": "Bx0zJHOLVkOXUS2KZxRbW",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "u9Ll4IbPdko14m-IDMgBw",
+          "name": "blood_request",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "VrgSUNaiM1OHAy8WV-yZ6",
+          "name": "donor",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false
+    },
+    {
+      "id": "X3T6WXFwYFPVWLfyfACQC",
+      "name": "blood_donations",
+      "x": 872,
+      "y": 121,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": "O4Zh0zg88KoK31YRHcm31",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "1ZnLE-VYHOD1vlMmtxuIn",
+          "name": "blood_request",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "GXth7zGulCc-FZ_JG2b4j",
+          "name": "donor",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "xEDq29_TAknbd8nnMIDuL",
+          "name": "status",
+          "type": "DONATION_STATUS",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "9wI5FTjrC5HhFmOYqpxjZ",
+          "name": "quantity",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "p_QyTytf6wxJ96G0iCxJY",
+          "name": "blood_component",
+          "type": "",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": ""
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false,
+      "width": 327
+    },
+    {
+      "id": "sumShjmHi681oCKwDAAOy",
+      "name": "blood_components",
+      "x": 0,
+      "y": 148,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "id": "A5lNpCEj-pYMcDGw_JjeE",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "RnD7ugzirByD8bunWgyQa",
+          "name": "component",
+          "type": "BLOOD_COMPONENT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "NgHJxI3pii_UY0mZpGmQU",
+          "name": "units",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "Q3ifXfW6k_w4phD0UYvUD",
+          "name": "blood_request",
+          "type": "UUID",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false,
+      "width": 286
+    }
+  ],
+  "relationships": [
+    {
+      "startTableId": "5Gcvvl4bce9-GhIxCXhEE",
+      "startFieldId": "WhwjC7Sk8qVAV2iE1Tr4V",
+      "endTableId": "CmRQokGIhXoW20Yi5mLj3",
+      "endFieldId": "u9Ll4IbPdko14m-IDMgBw",
+      "cardinality": "one_to_one",
+      "fields": [
+        {
+          "startFieldId": "WhwjC7Sk8qVAV2iE1Tr4V",
+          "endFieldId": "u9Ll4IbPdko14m-IDMgBw"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_blood_requests_id_donor_matches",
+      "color": "#808080",
+      "id": "9dkmbudJ6YsW1SqRpX-my"
+    },
+    {
+      "startTableId": "yS7T9fBum0G9RA8JeQIEs",
+      "startFieldId": "9FAGXlXNTbisH4U-QIeZf",
+      "endTableId": "CmRQokGIhXoW20Yi5mLj3",
+      "endFieldId": "VrgSUNaiM1OHAy8WV-yZ6",
+      "cardinality": "one_to_many",
+      "fields": [
+        {
+          "startFieldId": "9FAGXlXNTbisH4U-QIeZf",
+          "endFieldId": "VrgSUNaiM1OHAy8WV-yZ6"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_donors_id_donor_matches",
+      "color": "#808080",
+      "id": "Q68R7Nj0HtaaNNsiqnBLA"
+    },
+    {
+      "startTableId": "5Gcvvl4bce9-GhIxCXhEE",
+      "startFieldId": "WhwjC7Sk8qVAV2iE1Tr4V",
+      "endTableId": "X3T6WXFwYFPVWLfyfACQC",
+      "endFieldId": "1ZnLE-VYHOD1vlMmtxuIn",
+      "cardinality": "one_to_many",
+      "fields": [
+        {
+          "startFieldId": "WhwjC7Sk8qVAV2iE1Tr4V",
+          "endFieldId": "1ZnLE-VYHOD1vlMmtxuIn"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_blood_requests_id_blood_donations",
+      "color": "#808080",
+      "id": "HlEPXCYaaZ6095VbHMhrR"
+    },
+    {
+      "startTableId": "yS7T9fBum0G9RA8JeQIEs",
+      "startFieldId": "9FAGXlXNTbisH4U-QIeZf",
+      "endTableId": "X3T6WXFwYFPVWLfyfACQC",
+      "endFieldId": "GXth7zGulCc-FZ_JG2b4j",
+      "cardinality": "one_to_many",
+      "fields": [
+        {
+          "startFieldId": "9FAGXlXNTbisH4U-QIeZf",
+          "endFieldId": "GXth7zGulCc-FZ_JG2b4j"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_donors_id_blood_donations",
+      "color": "#808080",
+      "id": "HBKcvsbXSs5UvgGHQv5cM"
+    },
+    {
+      "startTableId": "sumShjmHi681oCKwDAAOy",
+      "startFieldId": "Q3ifXfW6k_w4phD0UYvUD",
+      "endTableId": "5Gcvvl4bce9-GhIxCXhEE",
+      "endFieldId": "WhwjC7Sk8qVAV2iE1Tr4V",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "Q3ifXfW6k_w4phD0UYvUD",
+          "endFieldId": "WhwjC7Sk8qVAV2iE1Tr4V"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_blood_components_blood_request_blood_requests",
+      "color": "#808080",
+      "id": "RP9qEJoPMJi8teli8YYv3"
+    }
+  ],
+  "notes": [],
+  "subjectAreas": [],
+  "views": [],
+  "database": "postgresql",
+  "types": [],
+  "enums": [
+    {
+      "id": "h1Qq-0BnWU8ypmm_2D5OQ",
+      "name": "blood_group",
+      "values": [
+        "A_POSITIVE",
+        "A_NEGATIVE",
+        "B_POSITIVE",
+        "B_NEGATIVE",
+        "AB_POSITIVE",
+        "AB_NEGATIVE",
+        "O_POSITIVE",
+        "O_NEGATIVE"
+      ]
+    },
+    {
+      "id": "VAz7sWX8ELKNwtKnTcACw",
+      "name": "donor_availability",
+      "values": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "RECENTLY_DONATED",
+        "INACTIVE"
+      ]
+    },
+    {
+      "id": "H4_E1GYW1JryjNxVkKaVu",
+      "name": "donation_status",
+      "values": [
+        "MATCHED",
+        "CONTACTED",
+        "ACCEPTED",
+        "DECLINED",
+        "DONATED",
+        "CANCELLED"
+      ]
+    },
+    {
+      "id": "hCLO2_s0-5Dbj9nX_Vl4b",
+      "name": "blood_component",
+      "values": [
+        "WHOLE_BLOOD",
+        "RED_CELLS",
+        "PLATELETS",
+        "APHERESIS_PLATELETS",
+        "PLASMA",
+        "CRYOPRECIPITATE"
+      ]
+    }
+  ],
+  "title": "Nagorik"
+}
