@@ -1,5 +1,5 @@
 from fastmcp import FastMCP
-from tools import blood_tools
+from tools import blood_tools, app_tools
 from resources import blood_resource
 
 mcp = FastMCP(
@@ -9,6 +9,8 @@ mcp = FastMCP(
     )
 
 # Tools Register
+mcp.add_tool(app_tools.list_resources)
+
 mcp.add_tool(blood_tools.message_tool)
 mcp.add_tool(blood_tools.find_donors)
 mcp.add_tool(blood_tools.create_donor_account)
