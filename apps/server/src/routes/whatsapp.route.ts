@@ -16,11 +16,6 @@ export class WhatsappRouter implements IRouter {
   }
 
   createRouters(): void {
-    this.router
-      .route("/:phone/connect")
-      .get(
-        asyncHandler(this.controller.handleCreateQrCode.bind(this.controller))
-      );
   }
 
   getRouters(): Router {

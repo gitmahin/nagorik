@@ -1,0 +1,13 @@
+[project]
+name = "mcp-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "gitmahin", email = "nimahin25@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastmcp[apps]>=4.0.10",
+    "pydantic>=2.13.5"
+]
