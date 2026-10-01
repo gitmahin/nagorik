@@ -9,13 +9,21 @@ GET_ALL_DONORS: Final = "data://donors{?blood_group,phone,email,status}"
 
 @resource(
     uri=GET_DONORS_BY_ID_URI,
-    name="Get done by id",
+    name="Get donor by id",
     annotations={
         "readOnlyHint": True,
     }
 )
 def getDonorsById(donor_id: str):
-    pass
+    """Get donors by specific id 
+
+    Args:
+        donor_id (str): It is required 
+    """
+    return {
+        "name": "Mahin",
+        "id": donor_id
+    }
 
 @resource(
     uri=GET_ALL_DONORS,
@@ -46,6 +54,6 @@ get_donors_by_id = ResourceTemplate.from_function(
 
 get_all_donors = ResourceTemplate.from_function(
     getAllDonors,
-    GET_ALL_DONORS
+    GET_ALL_DONORS,
 )
 

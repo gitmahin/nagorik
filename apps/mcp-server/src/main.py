@@ -5,11 +5,11 @@ from resources import blood_resource
 mcp = FastMCP(
     "Nagorik Fast MCP Server",           
     instructions="Provides tools for nagorik automation",
-    strict_input_validation=True,
     mask_error_details=True
     )
 
 # Tools Register
+mcp.add_tool(blood_tools.message_tool)
 mcp.add_tool(blood_tools.find_donors)
 mcp.add_tool(blood_tools.create_donor_account)
 
