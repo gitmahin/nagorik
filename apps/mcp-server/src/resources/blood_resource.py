@@ -2,7 +2,7 @@ from fastmcp.resources import ResourceTemplate, resource
 from typing import Final
 from pydantic import EmailStr
 import json
-from schemas.blood_tools_validation_schema import DonationStatus, BloodGroup
+from constants.blood_constants import DonationStatus, BloodGroup
 
 GET_DONORS_BY_ID_URI: Final = "data://donors/id/{donor_id}"
 GET_ALL_DONORS: Final = "data://donors{?blood_group,phone,email,status}"

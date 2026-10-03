@@ -4,7 +4,7 @@ from resources import blood_resource
 
 mcp = FastMCP(
     "Nagorik Fast MCP Server",           
-    instructions="Provides tools for nagorik automation",
+    instructions="Provides middlewares for nagorik automation",
     mask_error_details=True
     )
 
