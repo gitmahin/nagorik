@@ -2,6 +2,8 @@ import {
   BloodZSchema,
   type CreateBloodRequestInputType,
   type CreateDonorInputType,
+  type DeleteDonorInputType,
+  type UpdateDonorInputType,
 } from "@/schemas";
 import { Validator } from "../validator";
 import type z from "zod";
@@ -26,6 +28,32 @@ export class BloodValidator extends Validator {
     const { data, success, error } = this.validate(
       payload,
       BloodZSchema.CreateDonor
+    );
+    if (!success) {
+      return error;
+    }
+    return data;
+  }
+
+  updateDonorInput(
+    payload: UpdateDonorInputType
+  ): UpdateDonorInputType | z.ZodError {
+    const { data, success, error } = this.validate(
+      payload,
+      BloodZSchema.UpdateDonor
+    );
+    if (!success) {
+      return error;
+    }
+    return data;
+  }
+
+  deleteDonorInput(
+    payload: DeleteDonorInputType
+  ): DeleteDonorInputType | z.ZodError {
+    const { data, success, error } = this.validate(
+      payload,
+      BloodZSchema.DeleteDonor
     );
     if (!success) {
       return error;

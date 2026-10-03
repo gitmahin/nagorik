@@ -5,6 +5,8 @@ import {
   BloodValidator,
   type CreateBloodRequestInputType,
   type CreateDonorInputType,
+  type DeleteDonorInputType,
+  type UpdateDonorInputType,
 } from "@repo/zod";
 import { isZodError, validationError } from "@/utils";
 import { ApiResponse } from "@repo/shared";
@@ -38,6 +40,22 @@ export class BloodController {
     const parse_payload = this.bloodValidator.createDonorInput(body);
     if (isZodError(parse_payload)) throw validationError(parse_payload);
     const result = await this.bloodService.createDonor(parse_payload);
-    return res.status(200).json(new ApiResponse(200, "Ok", result));
+    return res.status(200).json(new ApiResponse(200, "Created", result));
+  }
+
+  async updateDonorHandler(req: Request, res: Response) {
+    const body = req.body as UpdateDonorInputType;
+    const parse_payload = this.bloodValidator.updateDonorInput(body);
+    if (isZodError(parse_payload)) throw validationError(parse_payload);
+    const result = await this.bloodService.updateDonor(parse_payload);
+    return res.status(200).json(new ApiResponse(200, "Updated", result));
+  }
+
+  async deleteDonorHandler(req: Request, res: Response) {
+    const { donor_id } = req.params as DeleteDonorInputType;
+    const parse_payload = this.bloodValidator.deleteDonorInput({ donor_id });
+    if (isZodError(parse_payload)) throw validationError(parse_payload);
+    const result = await this.bloodService.deleteDonor(parse_payload);
+    return res.status(200).json(new ApiResponse(200, "Deleted", result));
   }
 }

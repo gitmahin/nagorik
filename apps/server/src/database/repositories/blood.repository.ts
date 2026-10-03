@@ -6,6 +6,8 @@ import { pgDb } from "@/libs/db.connect";
 import type {
   CreateBloodRequestInputType,
   CreateDonorInputType,
+  UpdateDonorInputType,
+  DeleteDonorInputType,
 } from "@repo/zod";
 import { geoCordinates } from "@/libs";
 import type { BloodRequestInsertType } from "../type";
@@ -190,5 +192,31 @@ export class BloodRepository {
       .returning();
 
     return donor;
+  }
+
+  static async updateDonor({ donor_id, ...fields }: UpdateDonorInputType) {
+    const geo_cordinates = await geoCordinates(fields.location!);
+    const [donor] = await pgDb
+      .update(donors)
+      .set({
+        ...fields,
+        ...(geo_cordinates
+          ? { lat: geo_cordinates.lat, lon: geo_cordinates.lon }
+          : {}),
+        updated_at: new Date(),
+      })
+      .where(eq(donors.id, donor_id))
+      .returning();
+
+    return donor;
+  }
+
+  static async deleteDonor({ donor_id }: DeleteDonorInputType) {
+    const [deleted] = await pgDb
+      .delete(donors)
+      .where(eq(donors.id, donor_id))
+      .returning({ id: donors.id });
+
+    return deleted;
   }
 }

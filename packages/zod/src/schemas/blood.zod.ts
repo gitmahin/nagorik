@@ -140,9 +140,59 @@ export abstract class BloodZSchema {
       .default("PUBLIC")
       .describe("PUBLIC donors appear in searches; PRIVATE donors do not."),
   });
+
+  static UpdateDonor = z
+    .object({
+      donor_id: z.uuid().describe("ID of the donor to update."),
+
+      name: z
+        .string()
+        .trim()
+        .min(2)
+        .max(100)
+        .optional()
+        .describe("Full name of the donor."),
+      location: z
+        .string()
+        .trim()
+        .min(2)
+        .max(300)
+        .optional()
+        .describe("Donor's area or district."),
+      phone: z
+        .string()
+        .trim()
+        .min(7)
+        .max(20)
+        .optional()
+        .describe("Donor's phone number."),
+      email: z.email().max(255).optional().describe("Donor's email address."),
+      blood_group: this.BloodGroup.optional().describe("Donor's blood group."),
+      active_status: z
+        .enum(DONOR_AVAILABILITIES)
+        .optional()
+        .describe("Whether the donor can currently donate."),
+      donor_visibility: z
+        .enum(DONOR_VISIBILITIES)
+        .optional()
+        .describe("PUBLIC or PRIVATE."),
+    })
+    .refine(
+      ({ donor_id, ...fields }) =>
+        Object.values(fields).some((v) => v !== undefined),
+      {
+        message: "Provide at least one field to update.",
+      }
+    );
+
+  static DeleteDonor = z.object({
+    donor_id: z.uuid().describe("ID of the donor to delete."),
+  });
 }
 
 export type CreateBloodRequestInputType = z.infer<
   typeof BloodZSchema.CreateBloodRequest
 >;
 export type CreateDonorInputType = z.infer<typeof BloodZSchema.CreateDonor>;
+export type UpdateDonorInputType = z.infer<typeof BloodZSchema.UpdateDonor>;
+export type DeleteDonorInputType = z.infer<typeof BloodZSchema.DeleteDonor>;

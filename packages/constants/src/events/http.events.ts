@@ -12,7 +12,7 @@ export enum SYSTEM_CUSTOM_ERROR_EVENTS {
 
   // -- 404: not found --
   USER_NOT_FOUND = "USER_NOT_FOUND",
-
+  DONOR_NOT_FOUND = "DONOR_NOT_FOUND",
   // -- 409: conflict --
   USER_ALREADY_VERIFIED = "USER_ALREADY_VERIFIED",
   USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS",
@@ -44,7 +44,7 @@ export const SystemCustomErrorCode: Record<SYSTEM_CUSTOM_ERROR_EVENTS, string> =
 
     // -- 404 --
     USER_NOT_FOUND: "40401",
-
+    DONOR_NOT_FOUND: "40402",
     // -- 409 --
     USER_ALREADY_VERIFIED: "40901",
     USER_ALREADY_EXISTS: "40904",
@@ -128,6 +128,11 @@ export const SystemCustomErrorMsgByCode: SystemCustomErrorMessageType = {
     title: "User Not Found",
     message: "No user exists with the given input.",
     code: SystemCustomErrorCode.USER_NOT_FOUND,
+  },
+  [SystemCustomErrorCode.DONOR_NOT_FOUND]: {
+    title: "Donor Not Found",
+    message: "No donor exists with the given ID.",
+    code: SystemCustomErrorCode.DONOR_NOT_FOUND,
   },
 
   // -- 409 --

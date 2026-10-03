@@ -3,7 +3,11 @@ import { inject, injectable } from "inversify";
 import type {
   CreateBloodRequestInputType,
   CreateDonorInputType,
+  UpdateDonorInputType,
+  DeleteDonorInputType,
 } from "@repo/zod";
+import { ApiError, getSystemCustomErrorMsgByKey } from "@repo/shared";
+import { DrizzleErrorCodes } from "@repo/constants";
 
 @injectable()
 export class BloodService {
@@ -37,5 +41,31 @@ export class BloodService {
 
   async createDonor(input: CreateDonorInputType) {
     return BloodRepository.createDonor(input);
+  }
+
+  async updateDonor(input: UpdateDonorInputType) {
+    const donor = await BloodRepository.updateDonor(input);
+    if (!donor) throw new Error(`Donor not found: ${input.donor_id}`);
+    return donor;
+  }
+
+  async deleteDonor(input: DeleteDonorInputType) {
+    try {
+      const deleted = await BloodRepository.deleteDonor(input);
+      if (!deleted)
+        throw new ApiError(
+          404,
+          getSystemCustomErrorMsgByKey("DONOR_NOT_FOUND")
+        );
+      return { id: deleted.id, deleted: true };
+    } catch (error: any) {
+      const code = error?.code ?? error?.cause?.code;
+      if (code === DrizzleErrorCodes.FK_VIOLATION) {
+        throw new Error(
+          "This donor has matches or donation records and cannot be deleted. Deactivate the donor instead."
+        );
+      }
+      throw error;
+    }
   }
 }
