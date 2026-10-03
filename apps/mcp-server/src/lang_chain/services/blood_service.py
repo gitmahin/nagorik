@@ -31,7 +31,7 @@ class BloodService:
             contact_person_name: str | None = None,
             notify_donors: bool = True,
             donors: list[Any] | None = None
-    ):
+    ) -> DonorMatchResult:
         chat_template = ChatPromptTemplate.from_messages(
            [
                ("human",
@@ -76,10 +76,8 @@ class BloodService:
         chain = chat_template | blood_agent | RunnableLambda(get_agent_res_content) | donor_match_result_parser
 
         @traceable(name="find_matched_donors", run_type="chain")
-        def invoke_chain() -> str:
+        def invoke_chain() -> DonorMatchResult:
             return chain.invoke({})
 
         agent_response = invoke_chain()
-        print(agent_response)
-
-        return
+        return agent_response

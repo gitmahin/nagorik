@@ -75,11 +75,11 @@ def find_donors_fn(
     donors listed first. Private donors are never returned.
     """
 
-    bloodService.find_donors_by_agent(
+    response = bloodService.find_donors_by_agent(
         blood_group, number_of_bags, date_time, hospital_name, location, contact_phone, contact_person_relation, reason_for_blood_request, blood_components, patient_age, contact_person_name, notify_donors, test_donors_text
     )
 
-    return "Ok"
+    return response
 
 
 
