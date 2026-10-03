@@ -30,7 +30,7 @@ function parseSkill(filePath: string): Skill {
 
   const [, front, body] = match;
   const meta: Record<string, string> = {};
-  for (const line of front.trim().split(/\r?\n/)) {
+  for (const line of front!.trim().split(/\r?\n/)) {
     const idx = line.indexOf(":");
     if (idx === -1) continue;
     meta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
@@ -43,7 +43,7 @@ function parseSkill(filePath: string): Skill {
   return {
     name: meta.name,
     description: meta.description,
-    body: body.trim(),
+    body: body!.trim(),
   };
 }
 

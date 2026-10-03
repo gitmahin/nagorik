@@ -17,4 +17,5 @@ export const main_agent = createAgent({
   systemPrompt: `
     ${AGENT_MEMORY}
     `,
+  tools: [loadSkill],
 });

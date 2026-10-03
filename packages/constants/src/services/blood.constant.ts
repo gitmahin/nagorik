@@ -1,0 +1,67 @@
+export const BLOOD_GROUPS = [
+  "A_POSITIVE",
+  "A_NEGATIVE",
+  "B_POSITIVE",
+  "B_NEGATIVE",
+  "AB_POSITIVE",
+  "AB_NEGATIVE",
+  "O_POSITIVE",
+  "O_NEGATIVE",
+] as const;
+
+export const DONOR_AVAILABILITIES = [
+  "AVAILABLE",
+  "UNAVAILABLE",
+  "RECENTLY_DONATED",
+  "INACTIVE",
+] as const;
+
+export const DONATION_STATUSES = [
+  "MATCHED",
+  "CONTACTED",
+  "ACCEPTED",
+  "DECLINED",
+  "DONATED",
+  "CANCELLED",
+] as const;
+
+export const BLOOD_COMPONENTS = [
+  "WHOLE_BLOOD",
+  "RED_CELLS",
+  "PLATELETS",
+  "APHERESIS_PLATELETS",
+  "PLASMA",
+  "CRYOPRECIPITATE",
+] as const;
+
+export const DONOR_VISIBILITIES = ["PUBLIC", "PRIVATE"] as const;
+
+export type BloodGroup =
+  | "A_POSITIVE"
+  | "A_NEGATIVE"
+  | "B_POSITIVE"
+  | "B_NEGATIVE"
+  | "AB_POSITIVE"
+  | "AB_NEGATIVE"
+  | "O_POSITIVE"
+  | "O_NEGATIVE";
+
+export const COMPATIBLE_DONORS: Record<BloodGroup, BloodGroup[]> = {
+  O_NEGATIVE: ["O_NEGATIVE"],
+  O_POSITIVE: ["O_POSITIVE", "O_NEGATIVE"],
+  A_NEGATIVE: ["A_NEGATIVE", "O_NEGATIVE"],
+  A_POSITIVE: ["A_POSITIVE", "A_NEGATIVE", "O_POSITIVE", "O_NEGATIVE"],
+  B_NEGATIVE: ["B_NEGATIVE", "O_NEGATIVE"],
+  B_POSITIVE: ["B_POSITIVE", "B_NEGATIVE", "O_POSITIVE", "O_NEGATIVE"],
+  AB_NEGATIVE: ["AB_NEGATIVE", "A_NEGATIVE", "B_NEGATIVE", "O_NEGATIVE"],
+  AB_POSITIVE: [
+    "AB_POSITIVE",
+    "AB_NEGATIVE",
+    "A_POSITIVE",
+    "A_NEGATIVE",
+    "B_POSITIVE",
+    "B_NEGATIVE",
+    "O_POSITIVE",
+    "O_NEGATIVE",
+  ],
+};

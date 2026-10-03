@@ -2,48 +2,30 @@ import * as t from "drizzle-orm/pg-core";
 import { pgTable, pgEnum } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from "uuid";
 import { table_timestamps } from "./helper";
+import {
+  BLOOD_COMPONENTS,
+  BLOOD_GROUPS,
+  DONATION_STATUSES,
+  DONOR_AVAILABILITIES,
+  DONOR_VISIBILITIES,
+} from "@repo/constants";
 
 // Enums
-export const bloodGroupEnum = pgEnum("blood_group", [
-  "A_POSITIVE",
-  "A_NEGATIVE",
-  "B_POSITIVE",
-  "B_NEGATIVE",
-  "AB_POSITIVE",
-  "AB_NEGATIVE",
-  "O_POSITIVE",
-  "O_NEGATIVE",
-]);
+export const bloodGroupEnum = pgEnum("blood_group", BLOOD_GROUPS);
 
-export const donorAvailabilityEnum = pgEnum("donor_availability", [
-  "AVAILABLE",
-  "UNAVAILABLE",
-  "RECENTLY_DONATED",
-  "INACTIVE",
-]);
+export const donorAvailabilityEnum = pgEnum(
+  "donor_availability",
+  DONOR_AVAILABILITIES
+);
 
-export const donationStatusEnum = pgEnum("donation_status", [
-  "MATCHED",
-  "CONTACTED",
-  "ACCEPTED",
-  "DECLINED",
-  "DONATED",
-  "CANCELLED",
-]);
+export const donationStatusEnum = pgEnum("donation_status", DONATION_STATUSES);
 
-export const bloodComponentEnum = pgEnum("blood_component", [
-  "WHOLE_BLOOD",
-  "RED_CELLS",
-  "PLATELETS",
-  "APHERESIS_PLATELETS",
-  "PLASMA",
-  "CRYOPRECIPITATE",
-]);
+export const bloodComponentEnum = pgEnum("blood_component", BLOOD_COMPONENTS);
 
-export const donorVisibilityEnum = pgEnum("donor_visibility", [
-  "PUBLIC",
-  "PRIVATE",
-]);
+export const donorVisibilityEnum = pgEnum(
+  "donor_visibility",
+  DONOR_VISIBILITIES
+);
 
 // Tables
 export const bloodRequests = pgTable("blood_requests", {
@@ -54,6 +36,8 @@ export const bloodRequests = pgTable("blood_requests", {
   date_time: t.timestamp(),
   hospital_name: t.varchar({ length: 255 }),
   location: t.text(),
+  lat: t.numeric(),
+  lon: t.numeric(),
   contact_phone: t.varchar({ length: 255 }),
   contact_person_name: t.varchar({ length: 255 }),
   contact_person_relation: t.varchar({ length: 255 }),
