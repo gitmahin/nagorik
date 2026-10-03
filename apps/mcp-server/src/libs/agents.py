@@ -2,17 +2,6 @@ from langchain.agents import create_agent
 from libs.llms import  blood_agent_llm, abroad_agent_llm, fast_agent_llm
 from lang_chain.middlewares import monitor_tools
 from libs.load_skills import load_skill, skill_list
-from typing import Final
-
-AGENT_MEMORY: Final = """
-Language instructions:
-- Understand Banglish (Bangla written using English letters) and interpret 
-its meaning in English for internal reasoning.
-- Understand Bangla and English input equally well.
-- Respond in the language and style preferred by the user
-If the user writes in Banglish, you may respond in Banglish unless they
-request another language.
-"""
 
 fast_agent = create_agent(
     model=fast_agent_llm,

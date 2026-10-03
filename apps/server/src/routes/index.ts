@@ -9,7 +9,7 @@ export class ApiRouter implements IRouter {
 
   constructor(
     @inject(WhatsappRouter)
-    private whatsappRouter: WhatsappRouter,
+    private whatsappRouter: WhatsappRouter
   ) {
     this.router = Router();
     this.whatsappRouter.createRouters();

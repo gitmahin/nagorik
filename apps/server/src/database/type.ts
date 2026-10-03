@@ -1,29 +1,50 @@
 import type {
-  userAddressesTable,
-  userContactsTable,
-  userEmailsTable,
-  userPhonesTable,
-  userProfilesTable,
-  usersTable,
+  bloodGroupEnum,
+  donorAvailabilityEnum,
+  donationStatusEnum,
+  bloodComponentEnum,
+  donorVisibilityEnum,
+  bloodRequests,
+  donors,
+  donorMatches,
+  bloodDonations,
+  bloodComponents,
 } from "./schemas";
 
 // ---------------------------------------------------------
-// User Types
+// Enum Types
 // ---------------------------------------------------------
-export type UserSelectType = typeof usersTable.$inferSelect;
-export type UserInsertType = typeof usersTable.$inferInsert;
+export type BloodGroupType = (typeof bloodGroupEnum.enumValues)[number];
+export type DonorAvailabilityType =
+  (typeof donorAvailabilityEnum.enumValues)[number];
+export type DonationStatusType = (typeof donationStatusEnum.enumValues)[number];
+export type BloodComponentType = (typeof bloodComponentEnum.enumValues)[number];
+export type DonorVisibilityType =
+  (typeof donorVisibilityEnum.enumValues)[number];
 
-export type UserProfileSelectType = typeof userProfilesTable.$inferSelect;
-export type UserProfileInsertType = typeof userProfilesTable.$inferInsert;
+// ---------------------------------------------------------
+// Blood Request Types
+// ---------------------------------------------------------
+export type BloodRequestSelectType = typeof bloodRequests.$inferSelect;
+export type BloodRequestInsertType = typeof bloodRequests.$inferInsert;
 
-export type UserContactSelectType = typeof userContactsTable.$inferSelect;
-export type UserContactInsertType = typeof userContactsTable.$inferInsert;
+// ---------------------------------------------------------
+// Donor Types
+// ---------------------------------------------------------
+export type DonorSelectType = typeof donors.$inferSelect;
+export type DonorInsertType = typeof donors.$inferInsert;
 
-export type UserPhonesSelectType = typeof userPhonesTable.$inferSelect;
-export type UserPhonesInsertType = typeof userPhonesTable.$inferInsert;
+export type DonorMatchSelectType = typeof donorMatches.$inferSelect;
+export type DonorMatchInsertType = typeof donorMatches.$inferInsert;
 
-export type UserEmailsSelectType = typeof userEmailsTable.$inferSelect;
-export type UserEmailsInsertType = typeof userEmailsTable.$inferInsert;
+// ---------------------------------------------------------
+// Donation Types
+// ---------------------------------------------------------
+export type BloodDonationSelectType = typeof bloodDonations.$inferSelect;
+export type BloodDonationInsertType = typeof bloodDonations.$inferInsert;
 
-export type UserAddressSelectType = typeof userAddressesTable.$inferSelect;
-export type UserAddressInsertType = typeof userAddressesTable.$inferInsert;
+// ---------------------------------------------------------
+// Blood Component Types
+// ---------------------------------------------------------
+export type BloodComponentSelectType = typeof bloodComponents.$inferSelect;
+export type BloodComponentInsertType = typeof bloodComponents.$inferInsert;

@@ -55,7 +55,9 @@ wwebClient.on("code", (code) => {
 
 // 3. ONLY TRIGGER IF AUTHENTICATION IS REQUIRED
 wwebClient.on("qr", async () => {
-  console.log("No existing session found in database. Requesting pairing code...");
+  console.log(
+    "No existing session found in database. Requesting pairing code..."
+  );
   try {
     // Manually request the code only when the login screen is active
     const code = await wwebClient.requestPairingCode("8801950787553");
@@ -70,7 +72,9 @@ wwebClient.on("ready", () => {
 });
 
 wwebClient.on("remote_session_saved", () => {
-  console.log("💾 SUCCESS: Session has been successfully backed up to MongoDB!");
+  console.log(
+    "💾 SUCCESS: Session has been successfully backed up to MongoDB!"
+  );
   console.log("👉 It is now 100% safe to restart your server.");
 });
 
@@ -78,7 +82,7 @@ wwebClient.on("auth_failure", (msg) => {
   console.error("❌ Authentication failure:", msg);
 });
 
-wwebClient 
+wwebClient
   .initialize()
   .catch((err) => console.error("initialize failed:", err));
 

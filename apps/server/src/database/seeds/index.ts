@@ -1,4 +1,3 @@
-
 const main = async () => {
   // const { userCount } = await seedUsers({ count: 20, addressesPerUser: 2 });
   // console.log(`Seed complete ✅ (${userCount} users)`);

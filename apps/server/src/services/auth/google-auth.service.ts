@@ -1,10 +1,9 @@
 import "dotenv/config";
 import { google } from "googleapis";
 import type { TokenPayload } from "google-auth-library";
-import type {} from "@repo/types"
+import type {} from "@repo/types";
 
-
-export class GoogleOAuthService  {
+export class GoogleOAuthService {
   private static CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   private static CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
   private static REDIRECT_URI = process.env.GOOGLE_AUTH_REDIRECT_URI;
@@ -17,8 +16,6 @@ export class GoogleOAuthService  {
   private oauthClient;
 
   constructor() {
-
-
     this.oauthClient = new google.auth.OAuth2({
       client_id: GoogleOAuthService.CLIENT_ID!,
       client_secret: GoogleOAuthService.CLIENT_SECRET!,

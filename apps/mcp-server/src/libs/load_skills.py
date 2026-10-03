@@ -3,8 +3,8 @@ load_dotenv()
 from langchain_core.tools import tool
 from pathlib import Path
 
-SRC_DIR = Path(__file__).resolve().parents[1]
-SKILLS_DIR = SRC_DIR / "skills"
+ROOT_DIR = Path(__file__).resolve().parents[3]
+SKILLS_DIR = ROOT_DIR / "skills"
 
 if not SKILLS_DIR.exists():
     raise FileNotFoundError(f"Skills folder not found: {SKILLS_DIR}")

@@ -644,12 +644,7 @@
     {
       "id": "VAz7sWX8ELKNwtKnTcACw",
       "name": "donor_availability",
-      "values": [
-        "AVAILABLE",
-        "UNAVAILABLE",
-        "RECENTLY_DONATED",
-        "INACTIVE"
-      ]
+      "values": ["AVAILABLE", "UNAVAILABLE", "RECENTLY_DONATED", "INACTIVE"]
     },
     {
       "id": "H4_E1GYW1JryjNxVkKaVu",

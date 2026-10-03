@@ -1,9 +1,10 @@
 import { baseConfig } from "@/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { bloodTableRelations } from "@/database/relations";
 
 const relations = {
-
+  ...bloodTableRelations,
 };
 
 export const pgDb = drizzle(baseConfig.DATABASE_URL, {

@@ -15,8 +15,7 @@ export class WhatsappRouter implements IRouter {
     this.router = Router();
   }
 
-  createRouters(): void {
-  }
+  createRouters(): void {}
 
   getRouters(): Router {
     return this.router;

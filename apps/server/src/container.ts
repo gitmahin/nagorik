@@ -7,12 +7,11 @@ import { ApiRouter } from "./routes";
 export const container: Container = new Container();
 
 // Service
-container.bind(WhatsappService).toSelf().inSingletonScope()
+container.bind(WhatsappService).toSelf().inSingletonScope();
 
 // Controllers
-container.bind(WhatsAppController).toSelf().inSingletonScope()
+container.bind(WhatsAppController).toSelf().inSingletonScope();
 
 // Routers
-container.bind(WhatsappRouter).toSelf().inSingletonScope()
-container.bind(ApiRouter).toSelf().inSingletonScope()
-
+container.bind(WhatsappRouter).toSelf().inSingletonScope();
+container.bind(ApiRouter).toSelf().inSingletonScope();

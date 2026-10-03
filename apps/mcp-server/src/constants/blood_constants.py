@@ -32,7 +32,7 @@ class DonorAvailability(str, Enum):
     AVAILABLE = "AVAILABLE"  
     UNAVAILABLE = "UNAVAILABLE"
     RECENTLY_DONATED = "RECENTLY_DONATED" 
-    INACTIVE = "INACTIVE"      
+    INACTIVE = "INACTIVE"
 
 # For Testing Purpose ------------------------------------------------------------------------
 

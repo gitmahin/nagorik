@@ -14,6 +14,4 @@ export class WhatsAppController {
     @inject(WhatsappService)
     private whatsappService: WhatsappService
   ) {}
-
-  
 }
