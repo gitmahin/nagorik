@@ -1,7 +1,9 @@
 import { BloodRepository, type FindDonorParams } from "@/database/repositories";
 import { inject, injectable } from "inversify";
-import type { CreateBloodRequestInputType } from "@repo/zod";
-import { geoCordinates } from "@/libs/geoCordinates";
+import type {
+  CreateBloodRequestInputType,
+  CreateDonorInputType,
+} from "@repo/zod";
 
 @injectable()
 export class BloodService {
@@ -10,14 +12,8 @@ export class BloodService {
     private bloodRepository: BloodRepository
   ) {}
 
-  async createFormattedBloodRequest(payload: CreateBloodRequestInputType) {
-    const geo_cordinates = await geoCordinates(payload.location);
-
-    return await this.bloodRepository.createBloodRequest({
-      ...payload,
-      lat: geo_cordinates?.lat,
-      lon: geo_cordinates?.lon,
-    });
+  async createBloodRequest(payload: CreateBloodRequestInputType) {
+    return await this.bloodRepository.createBloodRequest(payload);
   }
 
   async findDonors(
@@ -37,5 +33,9 @@ export class BloodService {
     }
     // last resort: no radius limit
     return this.bloodRepository.findDonorsNearby({ ...params, limit: 20 });
+  }
+
+  async createDonor(input: CreateDonorInputType) {
+    return BloodRepository.createDonor(input);
   }
 }

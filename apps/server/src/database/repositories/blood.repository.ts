@@ -3,7 +3,12 @@ import { injectable } from "inversify";
 import { bloodComponents, bloodRequests, donors } from "../schemas";
 import { and, eq, inArray, isNull, or, sql, type SQL } from "drizzle-orm";
 import { pgDb } from "@/libs/db.connect";
-import type { CreateBloodRequestInputType } from "@repo/zod";
+import type {
+  CreateBloodRequestInputType,
+  CreateDonorInputType,
+} from "@repo/zod";
+import { geoCordinates } from "@/libs";
+import type { BloodRequestInsertType } from "../type";
 
 export type FindDonorParams = {
   requestId: string;
@@ -30,22 +35,28 @@ export class BloodRepository {
       patient_age,
     } = input;
 
+    const geo_cordinates = await geoCordinates(location);
+
+    const values: BloodRequestInsertType = {
+      blood_group,
+      patient_age,
+      number_of_bags,
+      date_time: new Date(date_time),
+      hospital_name,
+      location,
+      contact_phone,
+      contact_person_name,
+      contact_person_relation,
+      reason_for_blood_request,
+      notify_donors,
+      lat: geo_cordinates?.lat,
+      lon: geo_cordinates?.lon,
+    };
+
     return pgDb.transaction(async (tx) => {
       const [request] = await tx
         .insert(bloodRequests)
-        .values({
-          blood_group,
-          patient_age,
-          number_of_bags,
-          date_time: new Date(date_time),
-          hospital_name,
-          location,
-          contact_phone,
-          contact_person_name,
-          contact_person_relation,
-          reason_for_blood_request,
-          notify_donors,
-        })
+        .values(values)
         .returning();
 
       const components = await tx
@@ -164,5 +175,20 @@ export class BloodRepository {
         sql`CASE WHEN ${donors.blood_group} = 'O_NEGATIVE' AND ${bloodGroup}::blood_group <> 'O_NEGATIVE' THEN 1 ELSE 0 END`
       )
       .limit(limit);
+  }
+
+  static async createDonor(input: CreateDonorInputType) {
+    const geo_cordinates = await geoCordinates(input.location);
+    const [donor] = await pgDb
+      .insert(donors)
+      .values({
+        ...input,
+        donation_count: 0,
+        lat: geo_cordinates?.lat,
+        lon: geo_cordinates?.lon,
+      })
+      .returning();
+
+    return donor;
   }
 }

@@ -1,5 +1,10 @@
 import z from "zod/v4";
-import { BLOOD_GROUPS, BLOOD_COMPONENTS } from "@repo/constants";
+import {
+  BLOOD_GROUPS,
+  BLOOD_COMPONENTS,
+  DONOR_AVAILABILITIES,
+  DONOR_VISIBILITIES,
+} from "@repo/constants";
 export abstract class BloodZSchema {
   static BloodGroup = z.enum(BLOOD_GROUPS);
 
@@ -39,20 +44,6 @@ export abstract class BloodZSchema {
       .min(2)
       .max(300)
       .describe("Location of the hospital (area, district)."),
-
-    lat: z
-      .number()
-      .min(-90)
-      .max(90)
-      .optional()
-      .describe("Latitude of the hospital, e.g. 23.8103."),
-
-    lon: z
-      .number()
-      .min(-180)
-      .max(180)
-      .optional()
-      .describe("Longitude of the hospital, e.g. 90.4125."),
 
     contact_phone: z
       .string()
@@ -115,8 +106,43 @@ export abstract class BloodZSchema {
       .optional()
       .describe("Maximum number of donors to return. Defaults to 50."),
   });
+
+  static CreateDonor = z.object({
+    name: z.string().trim().min(2).max(100).describe("Full name of the donor."),
+
+    location: z
+      .string()
+      .trim()
+      .min(2)
+      .max(300)
+      .describe("Donor's area or district."),
+
+    phone: z
+      .string()
+      .trim()
+      .min(7)
+      .max(20)
+      .describe("Donor's phone number, e.g. 01XXXXXXXXX."),
+
+    email: z.email().max(255).optional().describe("Donor's email address."),
+
+    blood_group: this.BloodGroup.describe(
+      "Donor's blood group, e.g. O_POSITIVE."
+    ),
+
+    active_status: z
+      .enum(DONOR_AVAILABILITIES)
+      .default("AVAILABLE")
+      .describe("Whether the donor can currently donate."),
+
+    donor_visibility: z
+      .enum(DONOR_VISIBILITIES)
+      .default("PUBLIC")
+      .describe("PUBLIC donors appear in searches; PRIVATE donors do not."),
+  });
 }
 
 export type CreateBloodRequestInputType = z.infer<
   typeof BloodZSchema.CreateBloodRequest
 >;
+export type CreateDonorInputType = z.infer<typeof BloodZSchema.CreateDonor>;
