@@ -25,23 +25,23 @@ export class BloodController {
     const parse_payload = this.bloodValidator.createBloodRequstInput(body);
     if (isZodError(parse_payload)) throw validationError(parse_payload);
 
-    const {notify_donors, blood_components,date_time, ...rest} = parse_payload
+    const { notify_donors, blood_components, date_time, ...rest } =
+      parse_payload;
 
-    const created_blood_request =
-      await this.bloodService.createBloodRequest({
-        blood_components: blood_components,
-        date_time: new Date(date_time),
-        ...rest
-      });
-    
+    const created_blood_request = await this.bloodService.createBloodRequest({
+      blood_components: blood_components,
+      date_time: new Date(date_time),
+      ...rest,
+    });
+
     const donors = await this.bloodService.findDonors({
       availability_status: rest.availability_status,
       blood_group: created_blood_request.blood_group!,
       lat: created_blood_request.lat!,
       lon: created_blood_request.lon!,
       limit: rest.limit,
-      radiusKm: rest.radius
-    })
+      radiusKm: rest.radius,
+    });
 
     return res.status(200).json(new ApiResponse(200, "Ok", donors));
   }

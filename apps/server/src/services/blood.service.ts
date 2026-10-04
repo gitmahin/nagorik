@@ -1,7 +1,6 @@
-import { BloodRepository, type FindDonorParams } from "@/database/repositories";
+import { BloodRepository } from "@/database/repositories";
 import { inject, injectable } from "inversify";
 import type {
-  CreateBloodRequestInputType,
   CreateDonorInputType,
   UpdateDonorInputType,
   DeleteDonorInputType,
@@ -9,11 +8,7 @@ import type {
 import { ApiError, getSystemCustomErrorMsgByKey } from "@repo/shared";
 import { DrizzleErrorCodes } from "@repo/constants";
 import { BloodRedis } from "@/redis";
-import type {
-  BloodGroupType,
-  BloodRequestInsertType,
-  DonorAvailabilityType,
-} from "@/database/type";
+import type { BloodGroupType, DonorAvailabilityType } from "@/database/type";
 import { geoCordinates } from "@/libs";
 
 @injectable()

@@ -10,7 +10,7 @@ import { BloodRedis } from "./redis";
 export const container: Container = new Container();
 
 // Redis
-container.bind(BloodRedis).toSelf().inSingletonScope()
+container.bind(BloodRedis).toSelf().inSingletonScope();
 
 // Service
 container.bind(WhatsappService).toSelf().inSingletonScope();

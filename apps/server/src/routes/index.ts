@@ -16,8 +16,7 @@ export class ApiRouter implements IRouter {
   ) {
     this.router = Router();
     this.whatsappRouter.createRouters();
-    this.bloodRouter.createRouters()
-    
+    this.bloodRouter.createRouters();
   }
 
   createRouters(): void {

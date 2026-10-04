@@ -9,7 +9,7 @@ export enum SYSTEM_CUSTOM_ERROR_EVENTS {
   VERIFICATION_CODE_EXPIRED = "VERIFICATION_CODE_EXPIRED",
   WEBHOOK_HEADERS_MISSING = "WEBHOOK_HEADERS_MISSING",
   USER_NOT_VERIFIED = "USER_NOT_VERIFIED",
-  
+
   // -- 404: not found --
   USER_NOT_FOUND = "USER_NOT_FOUND",
   DONOR_NOT_FOUND = "DONOR_NOT_FOUND",
@@ -156,15 +156,15 @@ export const SystemCustomErrorMsgByCode: SystemCustomErrorMessageType = {
     code: SystemCustomErrorCode.USER_CREATION_FAILED,
   },
   [SystemCustomErrorCode.DONOR_CREATION_FAILED]: {
-  title: "Donor Registration Failed",
-  message: "Your donor profile could not be created. Please try again.",
-  code: SystemCustomErrorCode.DONOR_CREATION_FAILED,
-},
-[SystemCustomErrorCode.BLOOD_REQUEST_CREATION_FAILED]: {
-  title: "Blood Request Failed",
-  message: "Your blood request could not be created. Please try again.",
-  code: SystemCustomErrorCode.BLOOD_REQUEST_CREATION_FAILED,
-},
+    title: "Donor Registration Failed",
+    message: "Your donor profile could not be created. Please try again.",
+    code: SystemCustomErrorCode.DONOR_CREATION_FAILED,
+  },
+  [SystemCustomErrorCode.BLOOD_REQUEST_CREATION_FAILED]: {
+    title: "Blood Request Failed",
+    message: "Your blood request could not be created. Please try again.",
+    code: SystemCustomErrorCode.BLOOD_REQUEST_CREATION_FAILED,
+  },
   [SystemCustomErrorCode.USER_UPDATE_FAILED]: {
     title: "Update Failed",
     message: "Your account could not be updated. Please try again.",

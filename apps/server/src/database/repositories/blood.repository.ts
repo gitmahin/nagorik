@@ -120,7 +120,7 @@ export class BloodRepository {
     return donor;
   }
 
-  async updateDonor({ id, ...fields }: DonorInsertType ) {
+  async updateDonor({ id, ...fields }: DonorInsertType) {
     const [donor] = await pgDb
       .update(donors)
       .set({
@@ -137,7 +137,11 @@ export class BloodRepository {
     const [deleted] = await pgDb
       .delete(donors)
       .where(eq(donors.id, donor_id))
-      .returning({ id: donors.id, blood_group: donors.blood_group, availability: donors.active_status });
+      .returning({
+        id: donors.id,
+        blood_group: donors.blood_group,
+        availability: donors.active_status,
+      });
 
     return deleted;
   }
