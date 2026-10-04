@@ -5,8 +5,12 @@ import { WhatsappRouter } from "./routes/whatsapp.route";
 import { ApiRouter } from "./routes";
 import { BloodController } from "./controllers/blood.controller";
 import { BloodRouter } from "./routes/blood.route";
+import { BloodRedis } from "./redis";
 
 export const container: Container = new Container();
+
+// Redis
+container.bind(BloodRedis).toSelf().inSingletonScope()
 
 // Service
 container.bind(WhatsappService).toSelf().inSingletonScope();

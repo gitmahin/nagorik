@@ -21,12 +21,6 @@ export abstract class BloodZSchema {
       "Patient's blood group, e.g. A_POSITIVE."
     ),
 
-    number_of_bags: z
-      .int()
-      .min(1)
-      .max(1000)
-      .describe("Number of blood bags required."),
-
     date_time: z.iso
       .datetime({ offset: true })
       .describe("When the blood is needed, ISO 8601."),
@@ -92,19 +86,15 @@ export abstract class BloodZSchema {
       .default(true)
       .describe("Notify matching donors immediately."),
 
-    include_other_statuses: z
-      .boolean()
-      .optional()
-      .describe(
-        "Also include donors who are not currently AVAILABLE (e.g. recently donated). Defaults to false."
-      ),
-
+    availability_status: z.enum(DONOR_AVAILABILITIES),
+    radius: z.number().default(5).describe("Search radius in kilometers"),
     limit: z
       .int()
       .min(1)
-      .max(200)
+      .max(10)
       .optional()
-      .describe("Maximum number of donors to return. Defaults to 50."),
+      .default(5)
+      .describe("Maximum number of donors to return. Defaults to 5."),
   });
 
   static CreateDonor = z.object({

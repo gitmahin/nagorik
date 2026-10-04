@@ -42,7 +42,6 @@ export const bloodRequests = pgTable("blood_requests", {
   contact_person_name: t.varchar({ length: 255 }),
   contact_person_relation: t.varchar({ length: 255 }),
   reason_for_blood_request: t.text(),
-  notify_donors: t.boolean(),
   ...table_timestamps,
 });
 

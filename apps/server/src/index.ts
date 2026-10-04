@@ -6,7 +6,7 @@ import { errorHandlerMiddleware, requestLogger } from "./middlewares";
 import { baseConfig } from "./config";
 import { ExpressServer } from "./server";
 import promClient from "@prometheus-io/client";
-import { wwebClient } from "./libs";
+import { connectRedis, wwebClient } from "./libs";
 import { container } from "./container";
 import { ApiRouter } from "./routes";
 import { mongoConnect } from "./libs/mongo.connect";
@@ -30,7 +30,7 @@ await mongoConnect();
 /* -------------------------------------------------------------------------- */
 /*                                 Rate Limiter                               */
 /* -------------------------------------------------------------------------- */
-// await connectRedis();
+await connectRedis();
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000,
 //   limit: 1000,

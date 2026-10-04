@@ -16,11 +16,32 @@ export class BloodRouter implements IRouter {
 
   createRouters(): void {
     this.router
-      .route("/blood/request")
+      .route("/find")
       .post(
         asyncHandler(
           this.bloodController.createBloodRequestAndFindHandler
         ).bind(this.bloodController)
+      );
+
+    this.router
+      .route("/donor")
+      .post(
+        asyncHandler(
+          this.bloodController.createDonorHandler.bind(this.bloodController)
+        )
+      )
+      .patch(
+        asyncHandler(
+          this.bloodController.updateDonorHandler.bind(this.bloodController)
+        )
+      );
+
+    this.router
+      .route("/donor/:donor_id")
+      .delete(
+        asyncHandler(
+          this.bloodController.deleteDonorHandler.bind(this.bloodController)
+        )
       );
   }
 
