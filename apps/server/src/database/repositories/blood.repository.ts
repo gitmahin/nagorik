@@ -32,7 +32,7 @@ export type FindDonorParams = {
 
 type CreateDonorInput = Omit<DonorInsertType, "user_id" | "donation_count"> & {
   name: string;
-  identifier: string; 
+  identifier: string;
   password: string;
 };
 

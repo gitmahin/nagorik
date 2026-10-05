@@ -79,12 +79,12 @@ export class BloodController {
   }
 
   async updateDonorHandler(req: Request, res: Response) {
-    const {donor_id} = req.params as Pick<UpdateDonorInputType, "donor_id">
+    const { donor_id } = req.params as Pick<UpdateDonorInputType, "donor_id">;
     const body = req.body as Omit<UpdateDonorInputType, "donor_id">;
     const payload = {
       ...body,
-      donor_id
-    }
+      donor_id,
+    };
     const parse_payload = this.bloodValidator.updateDonorInput(payload);
     if (isZodError(parse_payload)) throw validationError(parse_payload);
     const result = await this.bloodService.updateDonor(parse_payload);

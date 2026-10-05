@@ -35,7 +35,9 @@ export class BloodValidator extends Validator {
     return data;
   }
 
-    findDonorsByIdsInput(payload: FindDonorByIdsInputType): FindDonorByIdsInputType | z.ZodError {
+  findDonorsByIdsInput(
+    payload: FindDonorByIdsInputType
+  ): FindDonorByIdsInputType | z.ZodError {
     const { data, success, error } = this.validate(
       payload,
       BloodZSchema.FindDonorByIds

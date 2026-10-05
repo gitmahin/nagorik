@@ -74,7 +74,7 @@ export class BloodService {
       throw new ApiError(404, getSystemCustomErrorMsgByKey("DONOR_NOT_FOUND"));
     }
 
-    return donors
+    return donors;
   }
 
   async createDonor(input: CreateDonorInputType) {

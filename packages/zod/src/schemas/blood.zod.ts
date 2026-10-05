@@ -140,7 +140,7 @@ export abstract class BloodZSchema {
       name: true,
     })
     .extend({
-      donor_id: z.uuid().describe("ID of the donor to update.")
+      donor_id: z.uuid().describe("ID of the donor to update."),
     })
     .refine(
       ({ donor_id, ...fields }) =>

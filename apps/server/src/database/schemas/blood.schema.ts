@@ -32,7 +32,7 @@ export const donorVisibilityEnum = pgEnum(
 export const users = pgTable("users", {
   id: t.uuid().primaryKey().notNull().$defaultFn(uuidv4),
   name: t.varchar({ length: 255 }).default("Unknown User"),
-  identifier: t.varchar({ length: 255 }).notNull().unique(), 
+  identifier: t.varchar({ length: 255 }).notNull().unique(),
   password: t.text().notNull(), // store a hash only
   role: userRoleEnum().notNull().array().default(["USER"]),
   is_verified: t.boolean().notNull().default(false),
@@ -40,14 +40,13 @@ export const users = pgTable("users", {
   ...table_timestamps,
 });
 
-
 // Tables
 export const bloodRequests = pgTable("blood_requests", {
   id: t.uuid().primaryKey().notNull().$defaultFn(uuidv4),
   user_id: t
     .uuid()
     .notNull()
-    .unique() 
+    .unique()
     .references(() => users.id, { onDelete: "cascade" }),
   blood_group: bloodGroupEnum(),
   patient_age: t.integer(),
@@ -69,7 +68,7 @@ export const donors = pgTable("donors", {
   user_id: t
     .uuid()
     .notNull()
-    .unique() 
+    .unique()
     .references(() => users.id, { onDelete: "cascade" }),
   location: t.text(),
   lat: t.numeric({ mode: "number" }),
@@ -82,7 +81,6 @@ export const donors = pgTable("donors", {
   donor_visibility: donorVisibilityEnum(),
   ...table_timestamps,
 });
-
 
 export const donorMatches = pgTable(
   "donor_matches",
