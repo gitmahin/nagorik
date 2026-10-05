@@ -2,8 +2,10 @@ from langchain.tools import tool
 from langgraph.prebuilt import ToolRuntime
 import requests
 import json
-
 from config.base_config import BaseConfigKey
+from redis import BloodRedis
+
+bloodRedis = BloodRedis()
 
 @tool("get_donors_inside_radius", description="Find donors within radius_km (kilometers, max 900)")
 def get_donors_inside_radius(radius_km: float, runtime: ToolRuntime) -> list[dict]:
@@ -13,6 +15,13 @@ def get_donors_inside_radius(radius_km: float, runtime: ToolRuntime) -> list[dic
     # })
     # response = requests.post(request_url, json=blood_request)
     # print(response.json())
+
+    # NOTE: use redis here. get only donor ids and hit api to get all donors via ids
+
+    # bloodRedis.getGeoCordOfDonors(
+    #     key="",
+    #     lat=
+    # )
 
     blood_request: dict = runtime.state["blood_request"]
     blood_group = blood_request["blood_group"]

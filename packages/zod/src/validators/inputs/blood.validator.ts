@@ -3,6 +3,8 @@ import {
   type CreateBloodRequestInputType,
   type CreateDonorInputType,
   type DeleteDonorInputType,
+  type FindDonorByIdsInputType,
+  type FindDonorInputType,
   type UpdateDonorInputType,
 } from "@/schemas";
 import { Validator } from "../validator";
@@ -15,6 +17,28 @@ export class BloodValidator extends Validator {
     const { data, success, error } = this.validate(
       payload,
       BloodZSchema.CreateBloodRequest
+    );
+    if (!success) {
+      return error;
+    }
+    return data;
+  }
+
+  findDonorInput(payload: FindDonorInputType): FindDonorInputType | z.ZodError {
+    const { data, success, error } = this.validate(
+      payload,
+      BloodZSchema.FindDonors
+    );
+    if (!success) {
+      return error;
+    }
+    return data;
+  }
+
+    findDonorsByIdsInput(payload: FindDonorByIdsInputType): FindDonorByIdsInputType | z.ZodError {
+    const { data, success, error } = this.validate(
+      payload,
+      BloodZSchema.FindDonorByIds
     );
     if (!success) {
       return error;

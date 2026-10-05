@@ -20,5 +20,6 @@ dependencies = [
     "langsmith>=0.14.2",
     "pydantic>=2.13.5",
     "python-dotenv>=1.2.4",
+    "redis>=8.1.0",
     "sentence-transformers>=6.1.0",
 ]

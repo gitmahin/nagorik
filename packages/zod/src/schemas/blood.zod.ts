@@ -85,20 +85,22 @@ export abstract class BloodZSchema {
       .boolean()
       .default(true)
       .describe("Notify matching donors immediately."),
-
-    availability_status: z.enum(DONOR_AVAILABILITIES),
-    radius: z.number().default(5).describe("Search radius in kilometers"),
-    limit: z
-      .int()
-      .min(1)
-      .max(10)
-      .optional()
-      .default(5)
-      .describe("Maximum number of donors to return. Defaults to 5."),
   });
 
   static CreateDonor = z.object({
     name: z.string().trim().min(2).max(100).describe("Full name of the donor."),
+    password: z
+      .string()
+      .min(8, { error: "Password must be at least 8 characters." })
+      .max(72, { error: "Password must be at most 72 characters." })
+      .describe("Account password, at least 8 characters."),
+
+    identifier: z
+      .string()
+      .trim()
+      .min(5, { error: "Identifier must be at least 5 characters." })
+      .max(255, { error: "Identifier must be at most 255 characters." })
+      .describe("Login identifier: the donor's phone number or email address."),
 
     location: z
       .string()
@@ -131,41 +133,14 @@ export abstract class BloodZSchema {
       .describe("PUBLIC donors appear in searches; PRIVATE donors do not."),
   });
 
-  static UpdateDonor = z
-    .object({
-      donor_id: z.uuid().describe("ID of the donor to update."),
-
-      name: z
-        .string()
-        .trim()
-        .min(2)
-        .max(100)
-        .optional()
-        .describe("Full name of the donor."),
-      location: z
-        .string()
-        .trim()
-        .min(2)
-        .max(300)
-        .optional()
-        .describe("Donor's area or district."),
-      phone: z
-        .string()
-        .trim()
-        .min(7)
-        .max(20)
-        .optional()
-        .describe("Donor's phone number."),
-      email: z.email().max(255).optional().describe("Donor's email address."),
-      blood_group: this.BloodGroup.optional().describe("Donor's blood group."),
-      active_status: z
-        .enum(DONOR_AVAILABILITIES)
-        .optional()
-        .describe("Whether the donor can currently donate."),
-      donor_visibility: z
-        .enum(DONOR_VISIBILITIES)
-        .optional()
-        .describe("PUBLIC or PRIVATE."),
+  static UpdateDonor = this.CreateDonor.partial()
+    .omit({
+      identifier: true,
+      password: true,
+      name: true,
+    })
+    .extend({
+      donor_id: z.uuid().describe("ID of the donor to update.")
     })
     .refine(
       ({ donor_id, ...fields }) =>
@@ -178,6 +153,30 @@ export abstract class BloodZSchema {
   static DeleteDonor = z.object({
     donor_id: z.uuid().describe("ID of the donor to delete."),
   });
+
+  static FindDonors = z.object({
+    blood_group: this.BloodGroup.describe(
+      "Donor's blood group, e.g. O_POSITIVE."
+    ),
+    availability_status: z.enum(DONOR_AVAILABILITIES).default("AVAILABLE"),
+    radius: z.number().default(5).describe("Search radius in kilometers"),
+    lat: z.number(),
+    lon: z.number(),
+    limit: z
+      .int()
+      .min(1)
+      .max(10)
+      .optional()
+      .default(5)
+      .describe("Maximum number of donors to return. Defaults to 5."),
+  });
+
+  static FindDonorByIds = z
+    .array(z.uuidv4({ error: "Each donor ID must be a valid UUID." }), {
+      error: "Donor IDs must be provided as a list.",
+    })
+    .min(1, { error: "At least 1 donor ID is required." })
+    .max(20, { error: "You can request at most 20 donor IDs at a time." });
 }
 
 export type CreateBloodRequestInputType = z.infer<
@@ -186,3 +185,7 @@ export type CreateBloodRequestInputType = z.infer<
 export type CreateDonorInputType = z.infer<typeof BloodZSchema.CreateDonor>;
 export type UpdateDonorInputType = z.infer<typeof BloodZSchema.UpdateDonor>;
 export type DeleteDonorInputType = z.infer<typeof BloodZSchema.DeleteDonor>;
+export type FindDonorInputType = z.infer<typeof BloodZSchema.FindDonors>;
+export type FindDonorByIdsInputType = z.infer<
+  typeof BloodZSchema.FindDonorByIds
+>;

@@ -4,6 +4,7 @@ import type {
   CreateDonorInputType,
   UpdateDonorInputType,
   DeleteDonorInputType,
+  FindDonorByIdsInputType,
 } from "@repo/zod";
 import { ApiError, getSystemCustomErrorMsgByKey } from "@repo/shared";
 import { DrizzleErrorCodes } from "@repo/constants";
@@ -67,6 +68,15 @@ export class BloodService {
     });
   }
 
+  async findDonorsByIds(ids: FindDonorByIdsInputType) {
+    const donors = this.bloodRepository.findDonorsByIds({ ids });
+    if (!donors) {
+      throw new ApiError(404, getSystemCustomErrorMsgByKey("DONOR_NOT_FOUND"));
+    }
+
+    return donors
+  }
+
   async createDonor(input: CreateDonorInputType) {
     const geo_cordinates = await geoCordinates(input.location);
 
@@ -85,7 +95,7 @@ export class BloodService {
 
     await this.bloodRedis.createGeoCordOfDonors({
       key: input.blood_group + ":" + input.active_status,
-      data: created_donor?.id,
+      data: created_donor?.id!,
       lat: created_donor?.lat!,
       lon: created_donor?.lon!,
     });
@@ -96,8 +106,13 @@ export class BloodService {
   async updateDonor(input: UpdateDonorInputType) {
     const geo_cordinates = await geoCordinates(input.location as string);
     const updated_donor = await this.bloodRepository.updateDonor({
-      ...input,
       id: input.donor_id,
+      active_status: input.active_status,
+      blood_group: input.blood_group,
+      donor_visibility: input.donor_visibility,
+      email: input.email,
+      location: input.location,
+      phone: input.phone,
       lat: geo_cordinates?.lat,
       lon: geo_cordinates?.lon,
     });

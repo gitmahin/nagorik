@@ -16,15 +16,15 @@ export class BloodRouter implements IRouter {
 
   createRouters(): void {
     this.router
-      .route("/find")
+      .route("/")
       .post(
-        asyncHandler(
-          this.bloodController.createBloodRequestAndFindHandler
-        ).bind(this.bloodController)
+        asyncHandler(this.bloodController.createBloodRequest).bind(
+          this.bloodController
+        )
       );
 
     this.router
-      .route("/donor")
+      .route("/donors")
       .post(
         asyncHandler(
           this.bloodController.createDonorHandler.bind(this.bloodController)
@@ -37,7 +37,25 @@ export class BloodRouter implements IRouter {
       );
 
     this.router
-      .route("/donor/:donor_id")
+      .route("/donors/find")
+      .get(
+        asyncHandler(
+          this.bloodController.findDonorsByQueryParamsHandler.bind(
+            this.bloodController
+          )
+        )
+      );
+
+    this.router
+      .route("/donors/find/ids")
+      .get(
+        asyncHandler(
+          this.bloodController.findDonorsByIdsHandler.bind(this.bloodController)
+        )
+      );
+
+    this.router
+      .route("/donors/:donor_id")
       .delete(
         asyncHandler(
           this.bloodController.deleteDonorHandler.bind(this.bloodController)
