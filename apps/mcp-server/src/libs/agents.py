@@ -1,11 +1,13 @@
 from langchain.agents import create_agent
+from lang_chain.tools import get_donors_inside_radius
 from libs.llms import  blood_agent_llm, abroad_agent_llm, fast_agent_llm
-from lang_chain.middlewares import monitor_tools
+from lang_chain.middlewares import monitor_tool, SafetyGuardrail
 from libs.load_skills import load_skill, skill_list
+from schemas.blood_tools_schemas import BloodComponentSchema, BloodRequestState, BloodAgentState
 
 fast_agent = create_agent(
     model=fast_agent_llm,
-    middleware=[monitor_tools.monitor_tool],
+    middleware=[monitor_tool],
     tools=[load_skill],
     system_prompt=(
         "You are a helpful assistant.\n"
@@ -16,8 +18,7 @@ fast_agent = create_agent(
 
 blood_agent = create_agent(
     model=blood_agent_llm,
-    middleware=[monitor_tools.monitor_tool],
-    tools=[load_skill],
+    tools=[load_skill, get_donors_inside_radius],
     system_prompt=(
         "You are a specialized blood donation assistance agent.\n"
         "Your role is to help users with blood donation requests, donor matching, "
@@ -28,11 +29,12 @@ blood_agent = create_agent(
         "and follow its instructions.\n"
         f"{skill_list}"
     ),
+    state_schema=BloodAgentState
 )
 
 abroad_agent = create_agent(
     model=abroad_agent_llm,
-    middleware=[monitor_tools.monitor_tool],
+    middleware=[monitor_tool],
     tools=[load_skill],
     system_prompt=(
         "You are a specialized overseas migration and expatriate assistance agent.\n"

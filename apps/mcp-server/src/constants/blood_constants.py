@@ -34,6 +34,10 @@ class DonorAvailability(str, Enum):
     RECENTLY_DONATED = "RECENTLY_DONATED" 
     INACTIVE = "INACTIVE"
 
+class SearchableDonorStatus(str, Enum):
+    AVAILABLE = "AVAILABLE"
+    RECENTLY_DONATED = "RECENTLY_DONATED"
+
 # For Testing Purpose ------------------------------------------------------------------------
 
 test_donors = [

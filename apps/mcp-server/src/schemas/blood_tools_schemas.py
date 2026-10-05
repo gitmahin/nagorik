@@ -1,5 +1,9 @@
+from typing import Any
+
+from langchain.agents import AgentState
 from pydantic import BaseModel, Field, UUID4, EmailStr
-from constants.blood_constants import DonorAvailability, BloodGroup, BloodComponent
+from constants.blood_constants import DonorAvailability, BloodGroup, BloodComponent, SearchableDonorStatus
+from datetime import datetime
 
 class BloodComponentInput(BaseModel):
     component: BloodComponent = Field(description="Blood component, e.g. RED_CELLS, PLATELETS.")
@@ -51,3 +55,21 @@ class DonorMatchResult(BaseModel):
             "Never include donors whose visibility is PRIVATE. Empty list if none match."
         )
     )
+
+class BloodRequestState(BaseModel):
+    blood_group: BloodGroup
+    date_time: datetime
+    hospital_name: str
+    location: str
+    contact_phone: str
+    contact_person_relation: str
+    reason_for_blood_request: str
+    blood_components: list[BloodComponentInput]
+    patient_age: int | None = None
+    contact_person_name: str | None = None
+    notify_donors: bool = True
+    availability_status: SearchableDonorStatus = SearchableDonorStatus.AVAILABLE
+    limit: int = Field(default=5, ge=1, le=10)
+
+class BloodAgentState(AgentState):
+    blood_request: dict[str, Any]

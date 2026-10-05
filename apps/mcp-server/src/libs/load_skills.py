@@ -3,7 +3,7 @@ load_dotenv()
 from langchain_core.tools import tool
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parents[3]
+ROOT_DIR = Path(__file__).resolve().parents[4]
 SKILLS_DIR = ROOT_DIR / "skills"
 
 if not SKILLS_DIR.exists():
@@ -27,7 +27,7 @@ skills = {
 
 skill_list = "\n".join(f"- {s['name']}: {s['description']}" for s in skills.values())
 
-@tool
+@tool("load_skill")
 def load_skill(skill_name: str) -> str:
     """Load the full instructions of a skill by name. Call this before doing a task that matches a skill."""
     skill = skills.get(skill_name)

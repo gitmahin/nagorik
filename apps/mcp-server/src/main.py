@@ -12,7 +12,7 @@ mcp = FastMCP(
 mcp.add_tool(app_tools.list_resources)
 
 mcp.add_tool(blood_tools.message_tool)
-mcp.add_tool(blood_tools.find_donors)
+mcp.add_tool(blood_tools.find_blood_donors)
 mcp.add_tool(blood_tools.create_donor_account)
 
 # Resources Register
