@@ -1,29 +1,24 @@
 import {
-  COMPATIBLE_DONORS,
-  DONOR_AVAILABILITIES,
+
   SYSTEM_CUSTOM_ERROR_EVENTS,
-  USER_ROLES,
 } from "@repo/constants";
 import { injectable } from "inversify";
 import { bloodComponents, bloodRequests, donors, users } from "../schemas";
-import { and, eq, inArray, isNull, or, sql, type SQL } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { pgDb } from "@/libs/db.connect";
 import type {
-  CreateBloodRequestInputType,
-  CreateDonorInputType,
-  UpdateDonorInputType,
   DeleteDonorInputType,
   FindDonorByIdsInputType,
+  GetBloodRequestInputType,
 } from "@repo/zod";
-import { geoCordinates } from "@/libs";
 import type {
   BloodComponentInsertType,
   BloodRequestInsertType,
   DonorAvailabilityType,
   DonorInsertType,
 } from "../type";
-import { ApiError } from "@repo/shared";
 import bcrypt from "bcryptjs";
+import { createHash } from "crypto";
 
 export type FindDonorParams = {
   ids: string[];
@@ -38,6 +33,12 @@ type CreateDonorInput = Omit<DonorInsertType, "user_id" | "donation_count"> & {
 
 @injectable()
 export class BloodRepository {
+  static hashUserBloodGroup(user_id: string, blood_group: string): string {
+    return createHash("sha256")
+      .update(`${user_id}:${blood_group}`)
+      .digest("hex");
+  }
+
   async createBloodRequest(
     input: Partial<
       BloodRequestInsertType & { blood_components: BloodComponentInsertType[] }
@@ -57,7 +58,7 @@ export class BloodRepository {
       patient_age,
     } = input;
 
-    const geo_cordinates = await geoCordinates(location as string);
+  
 
     return await pgDb.transaction(async (tx) => {
       const [created_user] = await tx
@@ -70,11 +71,17 @@ export class BloodRepository {
         })
         .returning();
 
+      const blood_request_id = BloodRepository.hashUserBloodGroup(
+        created_user?.id!,
+        blood_group!
+      );
+
       const [request] = await tx
         .insert(bloodRequests)
         .values({
           user_id: created_user?.id!,
           blood_group,
+          hash: blood_request_id,
           patient_age,
           number_of_bags,
           date_time: date_time,
@@ -84,8 +91,8 @@ export class BloodRepository {
           contact_person_name,
           contact_person_relation,
           reason_for_blood_request,
-          lat: geo_cordinates?.lat,
-          lon: geo_cordinates?.lon,
+          lat: input?.lat,
+          lon: input?.lon,
         })
         .returning();
 
@@ -104,6 +111,54 @@ export class BloodRepository {
 
       return { ...request, blood_components: components };
     });
+  }
+
+  async getBloodRequest(data: GetBloodRequestInputType) {
+    const {user_id, blood_group} = data 
+    const blood_request_id = BloodRepository.hashUserBloodGroup(
+      user_id,
+      blood_group
+    );
+    const [result] = await pgDb
+      .select()
+      .from(bloodRequests)
+      .where(eq(bloodRequests.hash, blood_request_id));
+    return result;
+  }
+
+  async updateBloodRequest(
+    identifier: GetBloodRequestInputType,
+    input: Partial<BloodRequestInsertType>
+  ) {
+    const {user_id, blood_group} = identifier
+    const blood_request_id = BloodRepository.hashUserBloodGroup(
+      user_id,
+      blood_group
+    );
+    const [result] = await pgDb
+      .update(bloodRequests)
+      .set({
+        ...input,
+      })
+      .where(eq(bloodRequests.hash, blood_request_id))
+      .returning();
+
+    return result;
+  }
+
+  async deleteBloodRequest(data: GetBloodRequestInputType) {
+    const {user_id, blood_group} = data
+    const [result] = await pgDb
+      .delete(bloodRequests)
+      .where(
+        and(
+          eq(bloodRequests.user_id, user_id),
+          eq(bloodRequests.blood_group, blood_group)
+        )
+      )
+      .returning();
+
+    return result;
   }
 
   async findDonorsByIdsAndAvailabilityStatus({
@@ -202,7 +257,6 @@ export class BloodRepository {
       .update(donors)
       .set({
         ...fields,
-        updated_at: new Date(),
       })
       .where(eq(donors.id, String(id)))
       .returning();

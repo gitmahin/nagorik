@@ -87,6 +87,12 @@ export abstract class BloodZSchema {
       .describe("Notify matching donors immediately."),
   });
 
+static GetBloodRequest = z
+  .object({
+    user_id: z.uuid({ error: "ID must be a valid UUID." }),
+  })
+  .extend(this.CreateBloodRequest.pick({ blood_group: true }).shape);
+
   static CreateDonor = z.object({
     name: z.string().trim().min(2).max(100).describe("Full name of the donor."),
     password: z
@@ -172,7 +178,7 @@ export abstract class BloodZSchema {
   });
 
   static FindDonorByIds = z
-    .array(z.uuidv4({ error: "Each donor ID must be a valid UUID." }), {
+    .array(z.uuid({ error: "Each donor ID must be a valid UUID." }), {
       error: "Donor IDs must be provided as a list.",
     })
     .min(1, { error: "At least 1 donor ID is required." })
@@ -187,5 +193,6 @@ export type UpdateDonorInputType = z.infer<typeof BloodZSchema.UpdateDonor>;
 export type DeleteDonorInputType = z.infer<typeof BloodZSchema.DeleteDonor>;
 export type FindDonorInputType = z.infer<typeof BloodZSchema.FindDonors>;
 export type FindDonorByIdsInputType = z.infer<
-  typeof BloodZSchema.FindDonorByIds
+typeof BloodZSchema.FindDonorByIds
 >;
+export type GetBloodRequestInputType = z.infer<typeof BloodZSchema.GetBloodRequest>;

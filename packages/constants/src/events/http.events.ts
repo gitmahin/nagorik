@@ -5,14 +5,16 @@ export enum SYSTEM_CUSTOM_ERROR_EVENTS {
 
   // -- 400: bad request / validation --
   VALIDATION_ERROR = "VALIDATION_ERROR",
+  LOCATION_NOT_RESOLVED = "LOCATION_NOT_RESOLVED",
   INVALID_VERIFICATION_CODE = "INVALID_VERIFICATION_CODE",
   VERIFICATION_CODE_EXPIRED = "VERIFICATION_CODE_EXPIRED",
   WEBHOOK_HEADERS_MISSING = "WEBHOOK_HEADERS_MISSING",
   USER_NOT_VERIFIED = "USER_NOT_VERIFIED",
-
+  BLOOD_REQUEST_NOT_FOUND = "BLOOD_REQUEST_NOT_FOUND",
   // -- 404: not found --
   USER_NOT_FOUND = "USER_NOT_FOUND",
   DONOR_NOT_FOUND = "DONOR_NOT_FOUND",
+
   // -- 409: conflict --
   USER_ALREADY_VERIFIED = "USER_ALREADY_VERIFIED",
   USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS",
@@ -41,10 +43,12 @@ export const SystemCustomErrorCode: Record<SYSTEM_CUSTOM_ERROR_EVENTS, string> =
     VERIFICATION_CODE_EXPIRED: "40003",
     WEBHOOK_HEADERS_MISSING: "40004",
     USER_NOT_VERIFIED: "40006",
+    LOCATION_NOT_RESOLVED: "40008",
 
     // -- 404 --
     USER_NOT_FOUND: "40401",
     DONOR_NOT_FOUND: "40402",
+    BLOOD_REQUEST_NOT_FOUND: "40403",
 
     // -- 409 --
     USER_ALREADY_VERIFIED: "40901",
@@ -99,6 +103,12 @@ export const SystemCustomErrorMsgByCode: SystemCustomErrorMessageType = {
     message: "One or more fields failed validation.",
     code: SystemCustomErrorCode.VALIDATION_ERROR,
   },
+  [SystemCustomErrorCode.LOCATION_NOT_RESOLVED]: {
+    title: "Location Not Found",
+    message:
+      'Your account was created, but we couldn\'t find your location on the map. Please update your profile with a nearby area or your district (for example, "Dhaka") so donors can be matched.',
+    code: SystemCustomErrorCode.LOCATION_NOT_RESOLVED,
+  },
 
   [SystemCustomErrorCode.INVALID_VERIFICATION_CODE]: {
     title: "Invalid Code",
@@ -134,6 +144,11 @@ export const SystemCustomErrorMsgByCode: SystemCustomErrorMessageType = {
     title: "Donor Not Found",
     message: "No donor exists with the given ID.",
     code: SystemCustomErrorCode.DONOR_NOT_FOUND,
+  },
+  [SystemCustomErrorCode.BLOOD_REQUEST_NOT_FOUND]: {
+    title: "Blood Request Not Found",
+    message: "No blood request exists for the given input.",
+    code: SystemCustomErrorCode.BLOOD_REQUEST_NOT_FOUND,
   },
 
   // -- 409 --

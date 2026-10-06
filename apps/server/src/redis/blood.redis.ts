@@ -65,8 +65,8 @@ export class BloodRedis {
     const result = await redisClient.geoSearch(
       key,
       {
-        longitude: lat,
-        latitude: lon,
+        latitude: lat,
+        longitude: lon,
       },
       { radius: radiusKm, unit: "km" }
     );

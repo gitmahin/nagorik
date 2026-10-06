@@ -1,22 +1,14 @@
 from fastmcp import Context
 from fastmcp.tools import Tool, tool
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
-from langchain_core.runnables import RunnableLambda
-from rich import prompt
-
-from constants.blood_constants import BloodGroup, DonorAvailability, test_donors_text, SearchableDonorStatus
-from libs.agents import blood_agent
-from schemas.blood_tools_schemas import BloodComponentInput, DonorMatchResult
+from constants.blood_constants import BloodGroup, DonorAvailability, SearchableDonorStatus
+from libs import geo_coordinates
+from schemas.blood_tools_schemas import BloodComponentInput
 from typing import Annotated
 from pydantic import Field, StringConstraints, EmailStr
 from datetime import  datetime
-from lang_chain.services import blood_service
-from langchain_core.prompts import ChatPromptTemplate
+from services import BloodService
 
-from utils.get_agent_res_content import get_agent_res_content
-
-bloodService = blood_service.BloodService()
+bloodService = BloodService()
 
 @tool
 async def message_tool_fn(message: str, ctx: Context):
@@ -48,7 +40,7 @@ def find_blood_donors_fn(
     location: Annotated[
         str,
         StringConstraints(min_length=2, max_length=300, strip_whitespace=True),
-        Field(description="Location of the hospital (area, district)."),
+        Field(description="Location of the hospital (area, district) without country name."),
     ],
     contact_phone: Annotated[
         str,
@@ -78,66 +70,22 @@ def find_blood_donors_fn(
     notify_donors: Annotated[bool, Field(description="Notify matching donors immediately.")] = True,
     limit: Annotated[int | None, Field(ge=0, le=20, description="Number of donors to get")] = 5,
     availability_status: Annotated[SearchableDonorStatus | None, Field(description="Donor availability filter: AVAILABLE (ready to donate) or RECENTLY_DONATED (in waiting period). Defaults to AVAILABLE; null returns both. UNAVAILABLE and INACTIVE are never returned.")] = SearchableDonorStatus.AVAILABLE
-) -> DonorMatchResult:
+) -> list[dict] :
     """Find matching blood donors for a blood request."""
 
-    blood_request = {
-        "blood_group": blood_group.value if hasattr(blood_group, "value") else blood_group,
-        "date_time": date_time.isoformat(),
-        "hospital_name": hospital_name,
-        "location": location,
-        "contact_phone": contact_phone,
-        "contact_person_relation": contact_person_relation,
-        "reason_for_blood_request": reason_for_blood_request,
-        "blood_components": [c.model_dump(mode="json") for c in blood_components],
-        "patient_age": patient_age,
-        "contact_person_name": contact_person_name,
-        "notify_donors": notify_donors,
-        "availability_status": availability_status.value if availability_status else None,  # renamed
-        "limit": min(limit or 5, 10),  # Zod max is 10
-    }
-
-    test_request = {
-        "blood_group": "B_POSITIVE",
-        "date_time": "2026-10-06T10:00:00+06:00",
-        "hospital_name": "Square Hospital",
-        "location": "Panthapath, Dhaka",
-        "contact_phone": "01712345678",
-        "contact_person_relation": "son",
-        "reason_for_blood_request": "surgery",
-        "blood_components": [
-            {"component": "RED_CELLS", "units": 2},
-            {"component": "PLATELETS", "units": 1},
-        ],
-        "latitude": 23.7525,
-        "longitude": 90.3811,
-        "patient_age": 54,
-        "contact_person_name": "Rahim Uddin",
-        "notify_donors": True,
-        "availability_status": "AVAILABLE",
-        "limit": 5,
-    }
-
-    DonorOutputParser = PydanticOutputParser(pydantic_object=DonorMatchResult)
-
-    chat_template = ChatPromptTemplate.from_messages([
-        ("system", "Call load_skill tool and"
-                   "then call get_donors_inside_radius tool to get the donors by radius.\n"),
-        ("human", "A new blood request was submitted. Find donors for {blood_group}\n{instructions}")
-    ]).partial(
-        instructions=DonorOutputParser.get_format_instructions()
+    coordinates = geo_coordinates(location)
+    created_blood_request = bloodService.create_blood_request(
+        blood_group, date_time, hospital_name, location, contact_phone, contact_person_relation, reason_for_blood_request, blood_components, patient_age, contact_person_name, notify_donors
     )
 
-    chain = chat_template | RunnableLambda(lambda pv: {
-        "messages": pv.to_messages(),
-        "blood_request": test_request
-    }) | blood_agent | get_agent_res_content | DonorOutputParser
+    donors : list[dict] = bloodService.find_donors(
+        lat=float(coordinates.get("lat") or 0.0),
+        lon=float(coordinates.get("lon") or 0.0),
+        geo_key=f"{created_blood_request.get("blood_group")}:{availability_status}",
+        limit=limit or 5
+    )
 
-    result: DonorMatchResult = chain.invoke({
-        "blood_group": test_request["blood_group"]
-    })
-
-    return result
+    return donors
 
 @tool
 async def create_donor_account_fn(

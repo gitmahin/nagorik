@@ -6,8 +6,12 @@ import { ApiRouter } from "./routes";
 import { BloodController } from "./controllers/blood.controller";
 import { BloodRouter } from "./routes/blood.route";
 import { BloodRedis } from "./redis";
+import { BloodRepository } from "./database/repositories";
 
 export const container: Container = new Container();
+
+// Repositories
+container.bind(BloodRepository).toSelf().inSingletonScope()
 
 // Redis
 container.bind(BloodRedis).toSelf().inSingletonScope();

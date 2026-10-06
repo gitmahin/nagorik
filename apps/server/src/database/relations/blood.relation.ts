@@ -47,7 +47,7 @@ export const bloodTableRelations = defineRelations(schema, (r) => ({
       from: r.donorMatches.blood_request,
       to: r.bloodRequests.id,
     }),
-    donor: r.one.donors({
+    blood_donor: r.one.donors({
       from: r.donorMatches.donor,
       to: r.donors.id,
     }),
@@ -58,7 +58,7 @@ export const bloodTableRelations = defineRelations(schema, (r) => ({
       from: r.bloodDonations.blood_request,
       to: r.bloodRequests.id,
     }),
-    donor: r.one.donors({
+    blood_donor: r.one.donors({
       from: r.bloodDonations.donor,
       to: r.donors.id,
     }),

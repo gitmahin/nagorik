@@ -8,6 +8,7 @@ import {
   type DeleteDonorInputType,
   type FindDonorByIdsInputType,
   type FindDonorInputType,
+  type GetBloodRequestInputType,
   type UpdateDonorInputType,
 } from "@repo/zod";
 import { isZodError, validationError } from "@/utils";
@@ -16,11 +17,13 @@ import { geoCordinates } from "@/libs";
 
 @injectable()
 export class BloodController {
+  private bloodValidator: BloodValidator;
   constructor(
     @inject(BloodService)
-    private bloodService: BloodService,
-    private bloodValidator: BloodValidator = new BloodValidator()
-  ) {}
+    private bloodService: BloodService
+  ) {
+    this.bloodValidator = new BloodValidator();
+  }
 
   async createBloodRequest(req: Request, res: Response) {
     const body = req.body as CreateBloodRequestInputType;
@@ -41,10 +44,26 @@ export class BloodController {
       .json(new ApiResponse(201, "Created", created_blood_request));
   }
 
+  async getBloodRequestHandler(req: Request, res: Response) {
+    const params = req.params as GetBloodRequestInputType;
+    const parse_params = this.bloodValidator.getBloodRequestInput(params);
+    if (isZodError(parse_params)) throw validationError(parse_params);
+
+    const response = await this.bloodService.getBloodRequest(parse_params);
+
+    return res.status(200).json(new ApiResponse(200, "Ok", response));
+  }
+
   async findDonorsByQueryParamsHandler(req: Request, res: Response) {
     const payload = req.query as unknown as FindDonorInputType;
 
-    const parse_payload = this.bloodValidator.findDonorInput(payload);
+    const parse_payload = this.bloodValidator.findDonorInput({
+      ...payload,
+      lat: Number(payload.lat),
+      lon: Number(payload.lon),
+      limit: Number(payload.limit),
+      radius: Number(payload.radius),
+    });
     if (isZodError(parse_payload)) throw validationError(parse_payload);
 
     const donors = await this.bloodService.findDonors({
@@ -60,13 +79,13 @@ export class BloodController {
   }
 
   async findDonorsByIdsHandler(req: Request, res: Response) {
-    const payload = req.query.ids as unknown as FindDonorByIdsInputType;
+    const payload = req.query.id as unknown as FindDonorByIdsInputType | string;
+    const ids = Array.isArray(payload) ? payload : [payload]
 
-    const parse_payload = this.bloodValidator.findDonorsByIdsInput(payload);
+    const parse_payload = this.bloodValidator.findDonorsByIdsInput(ids);
     if (isZodError(parse_payload)) throw validationError(parse_payload);
 
     const donors = await this.bloodService.findDonorsByIds(parse_payload);
-
     return res.status(200).json(new ApiResponse(200, "Ok", donors));
   }
 
@@ -75,7 +94,7 @@ export class BloodController {
     const parse_payload = this.bloodValidator.createDonorInput(body);
     if (isZodError(parse_payload)) throw validationError(parse_payload);
     const result = await this.bloodService.createDonor(parse_payload);
-    return res.status(200).json(new ApiResponse(200, "Created", result));
+    return res.status(201).json(new ApiResponse(201, "Created", result));
   }
 
   async updateDonorHandler(req: Request, res: Response) {
@@ -95,7 +114,7 @@ export class BloodController {
     const { donor_id } = req.params as DeleteDonorInputType;
     const parse_payload = this.bloodValidator.deleteDonorInput({ donor_id });
     if (isZodError(parse_payload)) throw validationError(parse_payload);
-    const result = await this.bloodService.deleteDonor(parse_payload);
-    return res.status(200).json(new ApiResponse(200, "Deleted", result));
+    await this.bloodService.deleteDonor(parse_payload);
+    return res.status(204).json(new ApiResponse(204, "Deleted"));
   }
 }

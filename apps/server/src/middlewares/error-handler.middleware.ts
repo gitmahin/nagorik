@@ -29,6 +29,7 @@ export const errorHandlerMiddleware = (
   res: Response,
   _next: NextFunction
 ) => {
+  console.log(err)
   // logger.error(err);
   let error: ApiError;
   /**

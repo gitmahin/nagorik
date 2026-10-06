@@ -25,12 +25,15 @@ collectDefaultMetrics({ register });
 const server = new ExpressServer();
 const app = server.GetApp();
 app.use(requestLogger());
-await mongoConnect();
 
+try {
+  await connectRedis();
+} catch (error) {}
+ 
 /* -------------------------------------------------------------------------- */
 /*                                 Rate Limiter                               */
 /* -------------------------------------------------------------------------- */
-await connectRedis();
+
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000,
 //   limit: 1000,
@@ -49,45 +52,45 @@ await connectRedis();
 /*                             Whatsapp client                                */
 /* -------------------------------------------------------------------------- */
 
-wwebClient.on("code", (code) => {
-  console.log(`🔢 Your WhatsApp Pairing Code is: ${code}`);
-});
+// wwebClient.on("code", (code) => {
+//   console.log(`🔢 Your WhatsApp Pairing Code is: ${code}`);
+// });
 
-// 3. ONLY TRIGGER IF AUTHENTICATION IS REQUIRED
-wwebClient.on("qr", async () => {
-  console.log(
-    "No existing session found in database. Requesting pairing code..."
-  );
-  try {
-    // Manually request the code only when the login screen is active
-    const code = await wwebClient.requestPairingCode("8801950787553");
-    console.log(`🔢 Requested Pairing Code: ${code}`);
-  } catch (err) {
-    console.error("Failed to request pairing code:", err);
-  }
-});
+// // 3. ONLY TRIGGER IF AUTHENTICATION IS REQUIRED
+// wwebClient.on("qr", async () => {
+//   console.log(
+//     "No existing session found in database. Requesting pairing code..."
+//   );
+//   try {
+//     // Manually request the code only when the login screen is active
+//     const code = await wwebClient.requestPairingCode("8801950787553");
+//     console.log(`🔢 Requested Pairing Code: ${code}`);
+//   } catch (err) {
+//     console.error("Failed to request pairing code:", err);
+//   }
+// });
 
-wwebClient.on("ready", () => {
-  console.log("✅ Client is successfully connected and ready!");
-});
+// wwebClient.on("ready", () => {
+//   console.log("✅ Client is successfully connected and ready!");
+// });
 
-wwebClient.on("remote_session_saved", () => {
-  console.log(
-    "💾 SUCCESS: Session has been successfully backed up to MongoDB!"
-  );
-  console.log("👉 It is now 100% safe to restart your server.");
-});
+// wwebClient.on("remote_session_saved", () => {
+//   console.log(
+//     "💾 SUCCESS: Session has been successfully backed up to MongoDB!"
+//   );
+//   console.log("👉 It is now 100% safe to restart your server.");
+// });
 
-wwebClient.on("auth_failure", (msg) => {
-  console.error("❌ Authentication failure:", msg);
-});
+// wwebClient.on("auth_failure", (msg) => {
+//   console.error("❌ Authentication failure:", msg);
+// });
 
-wwebClient
-  .initialize()
-  .catch((err) => console.error("initialize failed:", err));
+// wwebClient
+//   .initialize()
+//   .catch((err) => console.error("initialize failed:", err));
 
-process.on("unhandledRejection", (err) => console.error("unhandled:", err));
-process.on("uncaughtException", (err) => console.error("uncaught:", err));
+// process.on("unhandledRejection", (err) => console.error("unhandled:", err));
+// process.on("uncaughtException", (err) => console.error("uncaught:", err));
 
 /* -------------------------------------------------------------------------- */
 /*                                   Routes                                   */
@@ -130,9 +133,5 @@ app.listen(baseConfig.PORT, async () => {
  █  ░██ ▓▓  █  █▓ ▓█  █▒ ▓█    █░   █░ ▓█ 
  █   ██  ███▒  █▓██   ▒██▒█    ▒██  ▒██▒█     
  Listening...                  Port: ${baseConfig.PORT}`);
-  // console.log(" Database: ", result.rows[0]!.now ? "Working ✅" : "ᶻ 𝗓 𐰁");
-  // console.log(
-  //   " Redis: ",
-  //   (await redisClient.ping()) === "PONG" ? "Working ✅" : "ᶻ 𝗓 𐰁"
-  // );
+
 });

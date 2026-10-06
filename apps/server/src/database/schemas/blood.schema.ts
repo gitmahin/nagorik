@@ -46,9 +46,9 @@ export const bloodRequests = pgTable("blood_requests", {
   user_id: t
     .uuid()
     .notNull()
-    .unique()
     .references(() => users.id, { onDelete: "cascade" }),
   blood_group: bloodGroupEnum(),
+  hash: t.text().unique().notNull(),
   patient_age: t.integer(),
   number_of_bags: t.integer(),
   date_time: t.timestamp(),
