@@ -10,6 +10,7 @@ import { connectRedis, wwebClient } from "./libs";
 import { container } from "./container";
 import { ApiRouter } from "./routes";
 import { mongoConnect } from "./libs/mongo.connect";
+import dns from "node:dns";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Metrics                                    */
@@ -27,7 +28,9 @@ const app = server.GetApp();
 app.use(requestLogger());
 
 try {
+  dns.setServers(["8.8.8.8", "1.1.1.1"]);
   await connectRedis();
+  await mongoConnect()
 } catch (error) {}
  
 /* -------------------------------------------------------------------------- */
@@ -52,45 +55,50 @@ try {
 /*                             Whatsapp client                                */
 /* -------------------------------------------------------------------------- */
 
-// wwebClient.on("code", (code) => {
-//   console.log(`🔢 Your WhatsApp Pairing Code is: ${code}`);
-// });
+wwebClient.on("code", (code) => {
+  console.log(`🔢 Your WhatsApp Pairing Code is: ${code}`);
+});
 
-// // 3. ONLY TRIGGER IF AUTHENTICATION IS REQUIRED
-// wwebClient.on("qr", async () => {
-//   console.log(
-//     "No existing session found in database. Requesting pairing code..."
-//   );
-//   try {
-//     // Manually request the code only when the login screen is active
-//     const code = await wwebClient.requestPairingCode("8801950787553");
-//     console.log(`🔢 Requested Pairing Code: ${code}`);
-//   } catch (err) {
-//     console.error("Failed to request pairing code:", err);
-//   }
-// });
+// 3. ONLY TRIGGER IF AUTHENTICATION IS REQUIRED
+wwebClient.on("qr", async () => {
+  console.log(
+    "No existing session found in database. Requesting pairing code..."
+  );
+  try {
+    // Manually request the code only when the login screen is active
+    const code = await wwebClient.requestPairingCode("8801950787553");
+    console.log(`🔢 Requested Pairing Code: ${code}`);
+  } catch (err) {
+    console.error("Failed to request pairing code:", err);
+  }
+});
 
-// wwebClient.on("ready", () => {
-//   console.log("✅ Client is successfully connected and ready!");
-// });
+wwebClient.on("ready", () => {
+  console.log("✅ Client is successfully connected and ready!");
+});
 
-// wwebClient.on("remote_session_saved", () => {
-//   console.log(
-//     "💾 SUCCESS: Session has been successfully backed up to MongoDB!"
-//   );
-//   console.log("👉 It is now 100% safe to restart your server.");
-// });
+wwebClient.on("remote_session_saved", () => {
+  console.log(
+    "💾 SUCCESS: Session has been successfully backed up to MongoDB!"
+  );
+  console.log("👉 It is now 100% safe to restart your server.");
+});
 
-// wwebClient.on("auth_failure", (msg) => {
-//   console.error("❌ Authentication failure:", msg);
-// });
+wwebClient.on("message", async (message) => {
+  console.error("Message is here: ", message);
+  const id = await wwebClient.getNumberId("8801612493125")
+  message.reply("Message from WWeb.js! If you're receiving this message, I'm sorry! 😅 This is an automation I'm testing while building something new.", id?._serialized)
+});
 
-// wwebClient
-//   .initialize()
-//   .catch((err) => console.error("initialize failed:", err));
+wwebClient.on("disconnected", (reason) => console.error("WA disconnected:", reason));
+wwebClient.on("auth_failure", (m) => console.error("WA auth failure:", m));
 
-// process.on("unhandledRejection", (err) => console.error("unhandled:", err));
-// process.on("uncaughtException", (err) => console.error("uncaught:", err));
+wwebClient
+  .initialize()
+  .catch((err) => console.error("initialize failed:", err));
+
+process.on("unhandledRejection", (err) => console.error("unhandled:", err));
+process.on("uncaughtException", (err) => console.error("uncaught:", err));
 
 /* -------------------------------------------------------------------------- */
 /*                                   Routes                                   */

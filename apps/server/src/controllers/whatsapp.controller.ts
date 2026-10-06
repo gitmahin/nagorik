@@ -14,4 +14,8 @@ export class WhatsAppController {
     @inject(WhatsappService)
     private whatsappService: WhatsappService
   ) {}
+
+  async getChatId(req: Request, res: Response) {
+
+  }
 }
