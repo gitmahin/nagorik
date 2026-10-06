@@ -88,10 +88,8 @@ export abstract class BloodZSchema {
   });
 
   static GetBloodRequest = z
-    .object({
-      user_id: z.uuid({ error: "ID must be a valid UUID." }),
-    })
-    .extend(this.CreateBloodRequest.pick({ blood_group: true }).shape);
+    .object()
+    .extend(this.CreateBloodRequest.pick({ blood_group: true, contact_phone: true }).shape);
 
   static CreateDonor = z.object({
     name: z.string().trim().min(2).max(100).describe("Full name of the donor."),

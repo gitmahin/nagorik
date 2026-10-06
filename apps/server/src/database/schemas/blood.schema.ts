@@ -33,22 +33,22 @@ export const users = pgTable("users", {
   id: t.uuid().primaryKey().notNull().$defaultFn(uuidv4),
   name: t.varchar({ length: 255 }).default("Unknown User"),
   identifier: t.varchar({ length: 255 }).notNull().unique(),
-  password: t.text().notNull(), // store a hash only
+  password: t.varchar({ length: 300 }).notNull(),
   role: userRoleEnum().notNull().array().default(["USER"]),
   is_verified: t.boolean().notNull().default(false),
   verify_expiry: t.timestamp({ withTimezone: true }),
+  verify_code: t.varchar({ length: 8 }),
   ...table_timestamps,
 });
 
 // Tables
 export const bloodRequests = pgTable("blood_requests", {
   id: t.uuid().primaryKey().notNull().$defaultFn(uuidv4),
-  user_id: t
-    .uuid()
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
   blood_group: bloodGroupEnum(),
-  hash: t.text().unique().notNull(),
+  hash: t.text().unique().notNull(), // Hash is creating by combining phone and blood_group
+  verify_expiry: t.timestamp({ withTimezone: true }),
+  verify_code: t.varchar({ length: 8 }),
+  is_verified: t.boolean().notNull().default(false),
   patient_age: t.integer(),
   number_of_bags: t.integer(),
   date_time: t.timestamp(),

@@ -13,7 +13,6 @@ import {
 } from "@repo/zod";
 import { isZodError, validationError } from "@/utils";
 import { ApiResponse } from "@repo/shared";
-import { geoCordinates } from "@/libs";
 
 @injectable()
 export class BloodController {

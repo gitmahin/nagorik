@@ -66,4 +66,4 @@ export const COMPATIBLE_DONORS: Record<BloodGroup, BloodGroup[]> = {
   ],
 };
 
-export const USER_ROLES = ["USER", "ADMIN", "DONOR", "BLOOD"] as const;
+export const USER_ROLES = ["USER", "ADMIN", "DONOR"] as const;

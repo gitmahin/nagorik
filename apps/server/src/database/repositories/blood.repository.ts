@@ -1,10 +1,7 @@
-import {
-
-  SYSTEM_CUSTOM_ERROR_EVENTS,
-} from "@repo/constants";
+import { SYSTEM_CUSTOM_ERROR_EVENTS } from "@repo/constants";
 import { injectable } from "inversify";
 import { bloodComponents, bloodRequests, donors, users } from "../schemas";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, getColumns, getTableColumns, inArray } from "drizzle-orm";
 import { pgDb } from "@/libs/db.connect";
 import type {
   DeleteDonorInputType,
@@ -16,9 +13,12 @@ import type {
   BloodRequestInsertType,
   DonorAvailabilityType,
   DonorInsertType,
+  DonorSelectType,
+  UsersInsertType,
 } from "../type";
 import bcrypt from "bcryptjs";
 import { createHash } from "crypto";
+import type { PgAsyncTransaction } from "drizzle-orm/pg-core";
 
 export type FindDonorParams = {
   ids: string[];
@@ -33,15 +33,16 @@ type CreateDonorInput = Omit<DonorInsertType, "user_id" | "donation_count"> & {
 
 @injectable()
 export class BloodRepository {
-  static hashUserBloodGroup(user_id: string, blood_group: string): string {
-    return createHash("sha256")
-      .update(`${user_id}:${blood_group}`)
-      .digest("hex");
+  static hashUserBloodGroup(phone: string, blood_group: string): string {
+    return createHash("sha256").update(`${phone}:${blood_group}`).digest("hex");
   }
 
   async createBloodRequest(
     input: Partial<
-      BloodRequestInsertType & { blood_components: BloodComponentInsertType[] }
+      Omit<
+        BloodRequestInsertType,
+        "verify_expiry" | "verify_code" | "is_verified"
+      > & { blood_components: BloodComponentInsertType[] }
     >
   ) {
     const {
@@ -58,28 +59,15 @@ export class BloodRepository {
       patient_age,
     } = input;
 
-  
-
     return await pgDb.transaction(async (tx) => {
-      const [created_user] = await tx
-        .insert(users)
-        .values({
-          identifier: contact_phone as string,
-          name: contact_person_name ?? "Unknown",
-          role: ["BLOOD"],
-          password: contact_phone as string,
-        })
-        .returning();
-
       const blood_request_id = BloodRepository.hashUserBloodGroup(
-        created_user?.id!,
+        input.contact_phone as string,
         blood_group!
       );
 
       const [request] = await tx
         .insert(bloodRequests)
         .values({
-          user_id: created_user?.id!,
           blood_group,
           hash: blood_request_id,
           patient_age,
@@ -114,9 +102,9 @@ export class BloodRepository {
   }
 
   async getBloodRequest(data: GetBloodRequestInputType) {
-    const {user_id, blood_group} = data 
+    const { contact_phone, blood_group } = data;
     const blood_request_id = BloodRepository.hashUserBloodGroup(
-      user_id,
+      contact_phone,
       blood_group
     );
     const [result] = await pgDb
@@ -126,13 +114,57 @@ export class BloodRepository {
     return result;
   }
 
+  async getPublicUser(identifier: string, db: typeof pgDb  = pgDb) {
+    return await db.query.users.findFirst({
+      columns: {
+        id: true,
+        created_at: true,
+        identifier: true,
+        is_verified: true,
+        name: true,
+        updated_at: true,
+      },
+      where: {
+        identifier: {
+          eq: identifier,
+        },
+      },
+    });
+  }
+
+  async createUser(data: UsersInsertType,  db: typeof pgDb = pgDb) {
+    const { password, verify_code, verify_expiry, ...safe_fields } =
+      getColumns(users);
+    const [user] = await db
+      .insert(users)
+      .values({ ...data })
+      .returning(safe_fields);
+    return user;
+  }
+
+  async updateuser(
+    data: UsersInsertType & Required<Pick<UsersInsertType, "id">>,
+     db: typeof pgDb = pgDb
+  ) {
+    const { id, ...updateable_fields } = data;
+    const { password, verify_code, verify_expiry, ...safe_fields } =
+      getColumns(users);
+
+    const [user] = await db
+      .update(users)
+      .set(updateable_fields)
+      .where(eq(users.id, id))
+      .returning(safe_fields);
+    return user;
+  }
+
   async updateBloodRequest(
     identifier: GetBloodRequestInputType,
     input: Partial<BloodRequestInsertType>
   ) {
-    const {user_id, blood_group} = identifier
+    const { contact_phone, blood_group } = identifier;
     const blood_request_id = BloodRepository.hashUserBloodGroup(
-      user_id,
+      contact_phone,
       blood_group
     );
     const [result] = await pgDb
@@ -147,15 +179,14 @@ export class BloodRepository {
   }
 
   async deleteBloodRequest(data: GetBloodRequestInputType) {
-    const {user_id, blood_group} = data
+    const { contact_phone, blood_group } = data;
+    const blood_request_id = BloodRepository.hashUserBloodGroup(
+      contact_phone,
+      blood_group
+    );
     const [result] = await pgDb
       .delete(bloodRequests)
-      .where(
-        and(
-          eq(bloodRequests.user_id, user_id),
-          eq(bloodRequests.blood_group, blood_group)
-        )
-      )
+      .where(eq(bloodRequests.hash, blood_request_id))
       .returning();
 
     return result;
@@ -201,55 +232,28 @@ export class BloodRepository {
       .where(inArray(donors.id, ids));
   }
 
-  async createDonor(input: CreateDonorInput) {
-    const { name, identifier, password, ...donorFields } = input;
-    const password_hash = await bcrypt.hash(password as string, 10);
+  async createDonor(input: DonorInsertType & Required<Pick<DonorInsertType, "user_id">>, db: typeof pgDb  = pgDb) {
+    const { user_id, ...donorFields } = input;
 
-    return await pgDb.transaction(async (tx) => {
-      let [user] = await tx
-        .select()
-        .from(users)
-        .where(eq(users.identifier, identifier))
-        .limit(1);
+    const [donor] = await db
+      .insert(donors)
+      .values({
+        ...donorFields,
+        user_id: user_id,
+        donation_count: 0,
+      })
+      .returning();
 
-      if (!user) {
-        [user] = await tx
-          .insert(users)
-          .values({
-            name,
-            identifier,
-            password: password_hash,
-            role: ["DONOR"],
-          })
-          .returning();
-      } else {
-        const [existing] = await tx
-          .select({ id: donors.id })
-          .from(donors)
-          .where(eq(donors.user_id, user.id))
-          .limit(1);
+    return donor;
+  }
 
-        if (existing) {
-          throw new Error(SYSTEM_CUSTOM_ERROR_EVENTS.USER_ALREADY_EXISTS);
-        }
+  async getDonor(input: Pick<DonorSelectType, "user_id">, db: typeof pgDb  = pgDb) {
+    const [donor] = await db.select().from(donors).where(
+      eq(donors.user_id, input.user_id )
+    ) 
 
-        await tx
-          .update(users)
-          .set({ role: ["DONOR"] })
-          .where(eq(users.id, user.id));
-      }
 
-      const [donor] = await tx
-        .insert(donors)
-        .values({
-          ...donorFields,
-          user_id: user?.id!,
-          donation_count: 0,
-        })
-        .returning();
-
-      return { ...donor, name: user?.name };
-    });
+    return donor
   }
 
   async updateDonor({ id, ...fields }: Partial<DonorInsertType>) {

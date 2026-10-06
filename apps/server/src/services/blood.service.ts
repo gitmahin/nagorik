@@ -12,6 +12,8 @@ import { DrizzleErrorCodes } from "@repo/constants";
 import { BloodRedis } from "@/redis";
 import type { BloodGroupType, DonorAvailabilityType } from "@/database/type";
 import { geoCordinates } from "@/libs";
+import bcrypt from "bcryptjs";
+import { pgDb } from "@/libs/db.connect";
 
 @injectable()
 export class BloodService {
@@ -26,6 +28,8 @@ export class BloodService {
     payload: Parameters<BloodRepository["createBloodRequest"]>[0]
   ) {
     const geo_cordinates = await geoCordinates(payload.location as string);
+
+    // Get user or Create
     const response = await this.bloodRepository.createBloodRequest({
       ...payload,
       lat: geo_cordinates?.lat,
@@ -42,6 +46,19 @@ export class BloodService {
   }
 
   async getBloodRequest(payload: GetBloodRequestInputType) {
+    const result = await this.bloodRepository.getBloodRequest(payload);
+    if (!result) {
+      throw new ApiError(
+        404,
+        getSystemCustomErrorMsgByKey("BLOOD_REQUEST_NOT_FOUND")
+      );
+    }
+
+    return result;
+  }
+
+  // TODO: add verification step here
+  async updateBloodRequest(payload: GetBloodRequestInputType) {
     const result = await this.bloodRepository.getBloodRequest(payload);
     if (!result) {
       throw new ApiError(
@@ -98,10 +115,54 @@ export class BloodService {
   async createDonor(input: CreateDonorInputType) {
     const geo_cordinates = await geoCordinates(input.location);
 
-    const created_donor = await this.bloodRepository.createDonor({
-      ...input,
-      lat: geo_cordinates?.lat,
-      lon: geo_cordinates?.lon,
+    if (!geo_cordinates) {
+      throw new ApiError(
+        400,
+        getSystemCustomErrorMsgByKey("LOCATION_NOT_RESOLVED")
+      );
+    }
+
+    const created_donor = await pgDb.transaction(async (tx) => {
+      let user = await this.bloodRepository.getPublicUser(
+        input.phone,
+        tx as unknown as typeof pgDb
+      );
+
+      if (!user) {
+        const hash_pass = await bcrypt.hash(input.phone, 10);
+        user = await this.bloodRepository.createUser(
+          {
+            identifier: input.phone,
+            password: hash_pass,
+            name: input.name,
+            role: ["USER", "DONOR"],
+          },
+          tx as unknown as typeof pgDb
+        );
+      }
+
+      let donor = await this.bloodRepository.getDonor(
+        {
+          user_id: user?.id!,
+        },
+        tx as unknown as typeof pgDb
+      );
+
+      if (!donor) {
+        donor = await this.bloodRepository.createDonor(
+          {
+            ...input,
+            user_id: user?.id as string,
+            lat: geo_cordinates?.lat,
+            lon: geo_cordinates?.lon,
+          },
+          tx as unknown as typeof pgDb
+        );
+      } else {
+        throw new ApiError(409, getSystemCustomErrorMsgByKey("DONOR_ALREADY_EXISTS"))
+      }
+
+      return donor;
     });
 
     if (!created_donor) {
@@ -111,9 +172,6 @@ export class BloodService {
       );
     }
 
-  if(!geo_cordinates) {
-    throw new ApiError(400, getSystemCustomErrorMsgByKey("LOCATION_NOT_RESOLVED"))
-  }
     await this.bloodRedis.createGeoCordOfDonors({
       key: input.blood_group + ":" + input.active_status,
       data: created_donor?.id!,

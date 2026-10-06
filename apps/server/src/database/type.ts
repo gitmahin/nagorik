@@ -8,6 +8,7 @@ import type {
   donors,
   donorMatches,
   bloodDonations,
+  users,
   bloodComponents,
 } from "./schemas";
 
@@ -21,6 +22,12 @@ export type DonationStatusType = (typeof donationStatusEnum.enumValues)[number];
 export type BloodComponentType = (typeof bloodComponentEnum.enumValues)[number];
 export type DonorVisibilityType =
   (typeof donorVisibilityEnum.enumValues)[number];
+
+// ---------------------------------------------------------
+// Users Types
+// ---------------------------------------------------------
+export type UsersSelectType = typeof users.$inferSelect;
+export type UsersInsertType = typeof users.$inferInsert;
 
 // ---------------------------------------------------------
 // Blood Request Types

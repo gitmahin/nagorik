@@ -11,6 +11,7 @@ export enum SYSTEM_CUSTOM_ERROR_EVENTS {
   WEBHOOK_HEADERS_MISSING = "WEBHOOK_HEADERS_MISSING",
   USER_NOT_VERIFIED = "USER_NOT_VERIFIED",
   BLOOD_REQUEST_NOT_FOUND = "BLOOD_REQUEST_NOT_FOUND",
+  DONOR_ALREADY_EXISTS = "DONOR_ALREADY_EXISTS",
   // -- 404: not found --
   USER_NOT_FOUND = "USER_NOT_FOUND",
   DONOR_NOT_FOUND = "DONOR_NOT_FOUND",
@@ -44,6 +45,7 @@ export const SystemCustomErrorCode: Record<SYSTEM_CUSTOM_ERROR_EVENTS, string> =
     WEBHOOK_HEADERS_MISSING: "40004",
     USER_NOT_VERIFIED: "40006",
     LOCATION_NOT_RESOLVED: "40008",
+    DONOR_ALREADY_EXISTS: "40905",
 
     // -- 404 --
     USER_NOT_FOUND: "40401",
@@ -115,6 +117,13 @@ export const SystemCustomErrorMsgByCode: SystemCustomErrorMessageType = {
     message: "The verification code is incorrect.",
     code: SystemCustomErrorCode.INVALID_VERIFICATION_CODE,
   },
+
+  [SystemCustomErrorCode.DONOR_ALREADY_EXISTS]: {
+  title: "Donor Already Registered",
+  message:
+    "A donor profile already exists for this phone number. You can update your existing profile instead.",
+  code: SystemCustomErrorCode.DONOR_ALREADY_EXISTS,
+},
 
   [SystemCustomErrorCode.VERIFICATION_CODE_EXPIRED]: {
     title: "Code Expired",

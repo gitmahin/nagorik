@@ -1,25 +1,23 @@
 from datetime import datetime
-
 from config.base_config import baseConfig, BaseConfigKey
 from constants.blood_constants import BloodGroup
 from redis import BloodRedis
 import requests
-
 from schemas.blood_tools_schemas import BloodComponentInput
+from typing import Final
 
 bloodRedis = BloodRedis()
 
-MAX_RADIUS_KM = 900
-MAX_ATTEMPTS = 3
-
 class BloodService:
+    MAX_RADIUS_KM: Final = 900
+    MAX_ATTEMPTS: Final = 3
     def _build_radius_plan(self, base: float = 5, max_radius: float = MAX_RADIUS_KM) -> list[int]:
         """3 radius that grow geometrically and always end at max_radius."""
         base = min(base, max_radius)
         if base >= max_radius:
             return [int(max_radius)]
-        ratio = (max_radius / base) ** (1 / (MAX_ATTEMPTS - 1))
-        plan = [round(base * ratio ** i) for i in range(MAX_ATTEMPTS - 1)]
+        ratio = (max_radius / base) ** (1 / (BloodService.MAX_RADIUS_KM - 1))
+        plan = [round(base * ratio ** i) for i in range(BloodService.MAX_ATTEMPTS - 1)]
         plan.append(int(max_radius))
         return sorted(set(plan))
 
@@ -71,5 +69,5 @@ class BloodService:
             json=payload,
             timeout=10,
         )
-        response.raise_for_status()
+        response.raise_for_status() # Throw Error if Error
         return response.json()["data"]
