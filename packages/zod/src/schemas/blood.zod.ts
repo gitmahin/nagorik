@@ -87,11 +87,11 @@ export abstract class BloodZSchema {
       .describe("Notify matching donors immediately."),
   });
 
-static GetBloodRequest = z
-  .object({
-    user_id: z.uuid({ error: "ID must be a valid UUID." }),
-  })
-  .extend(this.CreateBloodRequest.pick({ blood_group: true }).shape);
+  static GetBloodRequest = z
+    .object({
+      user_id: z.uuid({ error: "ID must be a valid UUID." }),
+    })
+    .extend(this.CreateBloodRequest.pick({ blood_group: true }).shape);
 
   static CreateDonor = z.object({
     name: z.string().trim().min(2).max(100).describe("Full name of the donor."),
@@ -103,10 +103,12 @@ static GetBloodRequest = z
 
     identifier: z
       .string()
+      .regex(/^(?:\+?88)?01[3-9]\d{8}$/, {
+        error:
+          "Identifier must be a valid Bangladeshi phone number, e.g. 01XXXXXXXXX.",
+      })
       .trim()
-      .min(5, { error: "Identifier must be at least 5 characters." })
-      .max(255, { error: "Identifier must be at most 255 characters." })
-      .describe("Login identifier: the donor's phone number or email address."),
+      .describe("The donor's phone number or email address."),
 
     location: z
       .string()
@@ -193,6 +195,8 @@ export type UpdateDonorInputType = z.infer<typeof BloodZSchema.UpdateDonor>;
 export type DeleteDonorInputType = z.infer<typeof BloodZSchema.DeleteDonor>;
 export type FindDonorInputType = z.infer<typeof BloodZSchema.FindDonors>;
 export type FindDonorByIdsInputType = z.infer<
-typeof BloodZSchema.FindDonorByIds
+  typeof BloodZSchema.FindDonorByIds
 >;
-export type GetBloodRequestInputType = z.infer<typeof BloodZSchema.GetBloodRequest>;
+export type GetBloodRequestInputType = z.infer<
+  typeof BloodZSchema.GetBloodRequest
+>;

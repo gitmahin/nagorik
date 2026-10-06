@@ -207,6 +207,34 @@ export class BloodRouter implements IRouter {
         )
       );
 
+    // RESPONSE
+    //       {
+    //   "status": 200,
+    //   "message": "Ok",
+    //   "data": [
+    //     {
+    //       "id": "d2756ef6-97af-417d-a07f-6a69aa5795cd",
+    //       "name": "Karim Hossain",
+    //       "location": "Dhanmondi, Dhaka",
+    //       "phone": "01711000002",
+    //       "email": null,
+    //       "bloodGroup": "O_NEGATIVE",
+    //       "activeStatus": "AVAILABLE"
+    //     },
+    //     {
+    //       "id": "bf8f8c24-8b21-4880-b28c-dfa2e83181b0",
+    //       "name": "Mim Chowdhury",
+    //       "location": "Mymensingh Sadar, Mymensingh",
+    //       "phone": "01811000013",
+    //       "email": "mim.chowdhury@example.com",
+    //       "bloodGroup": "O_NEGATIVE",
+    //       "activeStatus": "AVAILABLE"
+    //     }
+    //   ],
+    //   "success": true,
+    //   "title": ""
+    // }
+
     this.router
       .route("/donors/:donor_id")
       .delete(
