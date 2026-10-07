@@ -1,4 +1,4 @@
-from libs import redisClient
+from libs.redisclient import redisClient
 
 class BloodRedis:
     def getGeoCordOfDonors(self, key: str, lat: float, lon: float, radius: int):
