@@ -1,7 +1,7 @@
 from datetime import datetime
 from config.base_config import baseConfig, BaseConfigKey
 from constants.blood_constants import BloodGroup
-from redis import BloodRedis
+from redis_instances.blood_redis import BloodRedis
 import requests
 from schemas.blood_tools_schemas import BloodComponentInput
 from typing import Final

@@ -1,7 +1,7 @@
 from fastmcp import Context
 from fastmcp.tools import Tool, tool
 from constants.blood_constants import BloodGroup, DonorAvailability, SearchableDonorStatus
-from libs import geo_coordinates
+from libs.getGeoCordinates import geo_coordinates
 from schemas.blood_tools_schemas import BloodComponentInput
 from typing import Annotated
 from pydantic import Field, StringConstraints, EmailStr
@@ -11,32 +11,9 @@ from services import BloodService
 bloodService = BloodService()
 
 @tool
-async def message_tool_fn(message: str, ctx: Context):
-    """Just response back to any messge
-
-    Args:
-        message (str): User provided message
-
-    Returns:
-        str: Model's repsonse
-    """
-
-    resource = await ctx.fastmcp.call_tool("list_resources")
-
-
-
-    # model_response  = aimodel.invoke(message)
-    return resource
-
-@tool
 def find_blood_donors_fn(
     blood_group: Annotated[BloodGroup, Field(description="Patient's blood group, e.g. A_POSITIVE.")],
     date_time: Annotated[datetime, Field(description="When the blood is needed, ISO 8601.")],
-    hospital_name: Annotated[
-        str,
-        StringConstraints(min_length=2, max_length=200, strip_whitespace=True),
-        Field(description="Name of the hospital where the blood is required."),
-    ],
     location: Annotated[
         str,
         StringConstraints(min_length=2, max_length=300, strip_whitespace=True),
@@ -46,11 +23,6 @@ def find_blood_donors_fn(
         str,
         StringConstraints(min_length=7, max_length=20, strip_whitespace=True),
         Field(description="Phone of the person requesting blood, e.g. 01XXXXXXXXX."),
-    ],
-    contact_person_relation: Annotated[
-        str,
-        StringConstraints(min_length=2, max_length=50, strip_whitespace=True),
-        Field(description="Relationship to the patient, e.g. son, brother."),
     ],
     reason_for_blood_request: Annotated[
         str,
@@ -62,6 +34,16 @@ def find_blood_donors_fn(
         Field(min_length=1, max_length=5, description="Required blood components."),
     ],
     ctx: Context,
+    contact_person_relation: Annotated[
+        str,
+        StringConstraints(min_length=2, max_length=50, strip_whitespace=True),
+        Field(description="Relationship to the patient, e.g. son, brother. Default is Not Provided"),
+    ] = "Not Provided",
+    hospital_name: Annotated[
+        str,
+        StringConstraints(max_length=200, strip_whitespace=True),
+        Field(description="Name of the hospital where the blood is required."),
+    ] = "Unkown",
     patient_age: Annotated[int | None, Field(ge=0, le=150, description="Patient age in years.")] = None,
     contact_person_name: Annotated[
         str | None,
@@ -154,11 +136,6 @@ async def create_donor_account_fn(
     pass
 
 # Tools
-message_tool = Tool.from_tool(
-    message_tool_fn,
-    name="message_tool"
-)
-
 find_blood_donors = Tool.from_tool(
     find_blood_donors_fn,
     name="find_blood_donors"
