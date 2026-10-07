@@ -1,13 +1,15 @@
 ---
 name: blood-request
-description: Handles blood donor requests. Use whenever a user says they need blood for a patient (any blood group or component such as red cells, platelets, plasma) or asks to find blood donors. Collects the required details, cleans the location, calls the blood request tool, and replies with only a compact donor list grouped by availability, followed by one short comforting line.
+description: Use whenever a user says they need blood for a patient (any blood group or component such as red cells, platelets, plasma) or asks to find blood donors. Collects the required details, cleans the location, calls the `find_blood_donors` tool, and replies with only a compact donor list grouped by availability, followed by one short comforting line.
 ---
 
 # Blood Request
 
-Help a user who urgently needs blood. Collect the details, call the blood request tool, and return **only the donor list** in the exact format below, plus a very short comforting note.
+Help a user who urgently needs blood. Collect the details, call the `find_blood_donors` tool, and return **only the donor list** in the exact format below, plus a very short comforting note.
 
 ## 1. Tool Inputs
+
+Tool name: `find_blood_donors`
 
 Collect these from the user. Ask only for what is missing, and keep follow-up questions short because the user may be in a stressful situation.
 
@@ -57,7 +59,7 @@ Examples:
 
 ## 3. Handling the Response
 
-The tool returns `donors` (a list of `DonorList`) and `phones`. Use `donors` to build the reply.
+`find_blood_donors` returns `donors` (a list of `DonorList`) and `phones`. Use `donors` to build the reply.
 
 Each donor has `status`, `name`, `blood_group`, `phone`, `email`, `location`.
 
@@ -139,7 +141,7 @@ Bad examples:
 
 1. Collect the missing required inputs (short questions only).
 2. Refine the location: remove the country, keep area and city or district only, no road or house numbers.
-3. Call the tool with the refined values.
+3. Call `find_blood_donors` with the refined values.
 4. Drop `UNAVAILABLE` and `INACTIVE` donors.
 5. Output AVAILABLE donors first, then RECENTLY_DONATED, using the exact format.
 6. Add one short comforting line (only once, unless the user is very anxious).

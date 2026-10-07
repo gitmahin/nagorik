@@ -1,6 +1,3 @@
-// ┌─────────────────────────┐
-// │ Base Imports            │
-// └─────────────────────────┘
 import { ApiResponse } from "@repo/shared";
 import { errorHandlerMiddleware, requestLogger } from "./middlewares";
 import { baseConfig } from "./config";
