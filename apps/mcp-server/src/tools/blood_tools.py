@@ -71,7 +71,7 @@ def find_blood_donors_fn(
     limit: Annotated[int | None, Field(ge=0, le=20, description="Number of donors to get")] = 5,
     availability_status: Annotated[SearchableDonorStatus | None, Field(description="Donor availability filter: AVAILABLE (ready to donate) or RECENTLY_DONATED (in waiting period). Defaults to AVAILABLE; null returns both. UNAVAILABLE and INACTIVE are never returned.")] = SearchableDonorStatus.AVAILABLE
 ) -> list[dict] :
-    """Find matching blood donors for a blood request."""
+    """Find blood donors for a blood request."""
 
     coordinates = geo_coordinates(location)
     created_blood_request = bloodService.create_blood_request(
