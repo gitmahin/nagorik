@@ -211,7 +211,8 @@ export class BloodRepository {
       .where(
         and(
           inArray(donors.id, ids),
-          eq(donors.active_status, availability_status)
+          eq(donors.active_status, availability_status),
+          eq(donors.donor_visibility, "PUBLIC")
         )
       );
   }
@@ -229,7 +230,7 @@ export class BloodRepository {
       })
       .from(donors)
       .innerJoin(users, eq(donors.user_id, users.id))
-      .where(inArray(donors.id, ids));
+      .where(and(inArray(donors.id, ids),      eq(donors.donor_visibility, "PUBLIC")));
   }
 
   async createDonor(input: DonorInsertType & Required<Pick<DonorInsertType, "user_id">>, db: typeof pgDb  = pgDb) {
@@ -249,7 +250,10 @@ export class BloodRepository {
 
   async getDonor(input: Pick<DonorSelectType, "user_id">, db: typeof pgDb  = pgDb) {
     const [donor] = await db.select().from(donors).where(
-      eq(donors.user_id, input.user_id )
+
+
+        eq(donors.user_id, input.user_id )
+
     ) 
 
 

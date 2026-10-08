@@ -3,7 +3,7 @@ from langgraph.prebuilt import ToolRuntime
 import requests
 import json
 from config.base_config import BaseConfigKey
-from redis import BloodRedis
+from redis_instances.blood_redis import BloodRedis
 
 bloodRedis = BloodRedis()
 
@@ -16,7 +16,7 @@ def get_donors_inside_radius(radius_km: float, runtime: ToolRuntime) -> list[dic
     # response = requests.post(request_url, json=blood_request)
     # print(response.json())
 
-    # NOTE: use redis here. get only donor ids and hit api to get all donors via ids
+    # NOTE: use redis_instances here. get only donor ids and hit api to get all donors via ids
 
     # bloodRedis.getGeoCordOfDonors(
     #     key="",

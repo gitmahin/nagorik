@@ -8,8 +8,10 @@ import { z } from "zod";
 // File location: root/apps/<your-app>/libs/load-skill.ts
 // libs -> <your-app> -> apps -> root  (3 levels up)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT_DIR = path.resolve(__dirname, "../../..");
+const ROOT_DIR = path.resolve(__dirname, "../../../..");
 const SKILLS_DIR = process.env.SKILLS_DIR ?? path.join(ROOT_DIR, "skills");
+
+console.log("here it is: ", SKILLS_DIR)
 
 if (!fs.existsSync(SKILLS_DIR)) {
   throw new Error(`Skills folder not found: ${SKILLS_DIR}`);

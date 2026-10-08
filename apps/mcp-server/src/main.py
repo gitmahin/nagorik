@@ -10,15 +10,12 @@ mcp = FastMCP(
 
 # Tools Register
 mcp.add_tool(app_tools.list_resources)
-
-mcp.add_tool(blood_tools.message_tool)
 mcp.add_tool(blood_tools.find_blood_donors)
 mcp.add_tool(blood_tools.create_donor_account)
 
 # Resources Register
 mcp.add_resource(blood_resource.get_donors_by_id)
 mcp.add_resource(blood_resource.get_all_donors)
-
 
 if __name__ == "__main__":
     mcp.run(transport="http", host="127.0.0.1", port=8000) 

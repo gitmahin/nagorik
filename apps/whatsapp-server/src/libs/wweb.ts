@@ -10,7 +10,7 @@ const { Client, RemoteAuth, LocalAuth } = whatsappWeb;
 
 const CLIENT_ID = "main-session";
 
-const baseStore = new MongoStore({ mongoose });
+const baseStore = new MongoStore({ mongoose }); 
 
 // Custom save: handles stream errors and THROWS when the zip is missing,
 // so remote_session_saved is never emitted for a backup that did not happen.
