@@ -43,7 +43,7 @@ def find_blood_donors_fn(
         str,
         StringConstraints(max_length=200, strip_whitespace=True),
         Field(description="Name of the hospital where the blood is required."),
-    ] = "Unkown",
+    ] = "Unknown",
     patient_age: Annotated[int | None, Field(ge=0, le=150, description="Patient age in years.")] = None,
     contact_person_name: Annotated[
         str | None,
@@ -53,17 +53,27 @@ def find_blood_donors_fn(
     limit: Annotated[int | None, Field(ge=0, le=20, description="Number of donors to get")] = 5,
     availability_status: Annotated[SearchableDonorStatus | None, Field(description="Donor availability filter: AVAILABLE (ready to donate) or RECENTLY_DONATED (in waiting period). Defaults to AVAILABLE; null returns both. UNAVAILABLE and INACTIVE are never returned.")] = SearchableDonorStatus.AVAILABLE
 ) -> list[dict] :
-    """Find blood donors for a blood request."""
+    """Find real blood donors for an active blood request.
+
+    MUST be called whenever the user asks to find, search for, or get blood donors.
+
+    Never answer a blood donor search from your own knowledge.
+    Never invent donor names, phone numbers, locations, blood groups, or availability.
+
+    All donor information in the final response MUST come from this tool."""
 
     coordinates = geo_coordinates(location)
+    if not coordinates:
+        return []
     created_blood_request = bloodService.create_blood_request(
         blood_group, date_time, hospital_name, location, contact_phone, contact_person_relation, reason_for_blood_request, blood_components, patient_age, contact_person_name, notify_donors
     )
-
+    status = getattr(availability_status, "value", availability_status)
+    geo_key = f"{created_blood_request.get('blood_group')}:{status}"
     donors : list[dict] = bloodService.find_donors(
-        lat=float(coordinates.get("lat") or 0.0),
-        lon=float(coordinates.get("lon") or 0.0),
-        geo_key=f"{created_blood_request.get("blood_group")}:{availability_status}",
+        lat=coordinates["lat"],
+        lon=coordinates["lon"],
+        geo_key=geo_key,
         limit=limit or 5
     )
 

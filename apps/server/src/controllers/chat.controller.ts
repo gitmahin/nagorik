@@ -16,6 +16,9 @@ export class ChatController {
         },
       ],
     });
+
+    // console.dir(result, { depth: null });
+
     const content = result.messages.at(-1)?.content
     return res.status(200).json(new ApiResponse(200, "Ok", content));
   }

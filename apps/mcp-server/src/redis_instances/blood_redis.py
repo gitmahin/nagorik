@@ -3,7 +3,7 @@ from libs.redisclient import redisClient
 class BloodRedis:
     def getGeoCordOfDonors(self, key: str, lat: float, lon: float, radius: int):
         result =  redisClient.geosearch(
-            key=key,
+            name=key,
             latitude=lat,
             longitude=lon,
             radius=radius,

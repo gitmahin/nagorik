@@ -30,9 +30,25 @@ class BloodService:
                 lon=lon,
                 radius=radius
             )
+
+        if not result:
+            return []
+
         query_params = "&".join(f"id={id}" for id in result[:limit])
-        response = requests.get(baseConfig[BaseConfigKey.API_SERVER_BASE_URL + f"/v1/bloods/donors/find/ids?{query_params}"])
-        return response.json()["data"]
+        url = baseConfig[BaseConfigKey.API_SERVER_BASE_URL.value] + f"/v1/bloods/donors/find/ids?{query_params}"
+
+        try:
+            response = requests.get(url, timeout=10)
+            body = response.json()
+        except (requests.RequestException, ValueError):
+            return []
+
+        if not response.ok:
+            print("find donors API error:", response.status_code, body)  # debug, remove later
+            return []
+
+        data = body.get("data") if isinstance(body, dict) else None
+        return data if isinstance(data, list) else []
 
     def create_blood_request(self,
                              blood_group: BloodGroup,
@@ -65,7 +81,7 @@ class BloodService:
             payload["contact_person_name"] = contact_person_name
 
         response = requests.post(
-            f"{BaseConfigKey.API_SERVER_BASE_URL}/v1/bloods",  # adjust to your real route
+            f"{baseConfig[BaseConfigKey.API_SERVER_BASE_URL.value]}/v1/bloods",  # adjust to your real route
             json=payload,
             timeout=10,
         )
