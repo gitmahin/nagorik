@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, "../../../..");
 const SKILLS_DIR = process.env.SKILLS_DIR ?? path.join(ROOT_DIR, "skills");
 
-console.log("here it is: ", SKILLS_DIR)
+console.log("Skills Location From Nodejs: ", SKILLS_DIR)
 
 if (!fs.existsSync(SKILLS_DIR)) {
   throw new Error(`Skills folder not found: ${SKILLS_DIR}`);

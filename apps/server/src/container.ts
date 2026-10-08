@@ -7,6 +7,8 @@ import { BloodRedis } from "./redis";
 import { BloodRepository } from "./database/repositories";
 import { ChatRouter } from "./routes/chat.route";
 import { ChatController } from "./controllers/chat.controller";
+import { WhatsappController } from "./controllers/whatsapp.controller";
+import { WhatsappRouter } from "./routes/whatsapp.route";
 
 export const container: Container = new Container();
 
@@ -22,8 +24,10 @@ container.bind(BloodService).toSelf().inSingletonScope();
 // Controllers
 container.bind(BloodController).toSelf().inSingletonScope();
 container.bind(ChatController).toSelf().inSingletonScope();
+container.bind(WhatsappController).toSelf().inSingletonScope();
 
 // Routers
 container.bind(BloodRouter).toSelf().inSingletonScope();
+container.bind(WhatsappRouter).toSelf().inSingletonScope();
 container.bind(ChatRouter).toSelf().inSingletonScope();
 container.bind(ApiRouter).toSelf().inSingletonScope();
