@@ -1,22 +1,21 @@
 import { MCPAdapter } from "@langchain/mcp-adapters";
 
 export async function createMCPAdapter() {
- try {
-       const adapter = new MCPAdapter({
-           servers: {
-               docs: { url: "http://localhost:8000/mcp" },
-           },
-            prefixToolNameWithServerName: false,
-  additionalToolNamePrefix: "",
-       });
-       
-       return await adapter.listTools();
- } catch (error) {
-    console.log("MCP unavailable, continuing without MCP tools");
-    return []
- }
-}
+  try {
+    const adapter = new MCPAdapter({
+      servers: {
+        nagorik: { url: "http://localhost:8000/mcp" },
+      },
+      prefixToolNameWithServerName: false,
+      additionalToolNamePrefix: "",
+    });
 
+    return await adapter.listTools();
+  } catch (error) {
+    console.log("MCP unavailable, continuing without MCP tools");
+    return [];
+  }
+}
 
 // import { MCPAdapter } from "@langchain/mcp-adapters";
 
